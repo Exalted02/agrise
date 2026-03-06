@@ -1,0 +1,16 @@
+--------------------------------------
+CPANEL - agri
+URL - https://agri.seleconit.com:2083/
+USER - agrise
+PW - 2n96hjq06Ngg
+--------------------------------------
+CPANEL - krushitirth
+URL - krushitirth.com:2083
+USER - krushiti
+PW - O!LiNHcfvz#S0qf=
+
+--------------------------------------
+ADMIN URL
+URL - https://agri.seleconit.com/admin
+USER - 9999999999
+PW - 9999999999
