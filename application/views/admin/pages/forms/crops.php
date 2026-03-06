@@ -43,7 +43,6 @@
                                             $selected_val = (isset($fetched_data[0]['id']) &&  !empty($fetched_data[0]['id'])) ? $fetched_data[0]['parent_id'] : '';
                                             $selected_vals = explode(',', $selected_val ?? '');
                                             echo get_crop_categories_option_html($categories, $selected_vals, $edit_id = isset($fetched_data[0]['id']) ? $fetched_data[0]['id'] : null);
-
                                             ?>
                                         </select>
                                     </div>
