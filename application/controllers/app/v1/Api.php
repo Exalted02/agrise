@@ -7398,24 +7398,39 @@ Defined Methods:-
 
 		$data = [];
 
+		$cumulative_days = 0;
+
 		foreach ($steps as $step) {
 
-			$completed = false;
+			$cumulative_days += $step['no_of_days'];
 
-			if ($days_passed >= $step['no_of_days']) {
-				$completed = true;
+			if ($days_passed >= $cumulative_days) {
+				$status = 'completed';
+			} 
+			elseif ($days_passed < $cumulative_days && $days_passed >= ($cumulative_days - $step['no_of_days'])) {
+				$status = 'current';
+			} 
+			else {
+				$status = 'pending';
 			}
+			
 
 			// get step details
-			$details = $this->db->query("
-				SELECT image, step_details
+			if ($service_id == 6) {
+				$select_fields = "SELECT image, step_details, preventive_measures_details, control_measures_details";
+			} else {
+				$select_fields = "SELECT image, step_details";
+			}
+
+			$details = $this->db->query($select_fields . " 
 				FROM 2026_crop_step_details
 				WHERE crop_step_id = '".$step['id']."'
 			")->result_array();
 
 			$data[] = [
 				'steps_title' => $step['steps_title'],
-				'completed'   => $completed,
+				'steps_image' => $step['steps_image'],
+				'status'   => $status,
 				'details'     => $details
 			];
 		}

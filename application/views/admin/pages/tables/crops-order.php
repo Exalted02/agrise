@@ -24,7 +24,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6 col-12 offset-md-3">
-                                        <label for="subcategory_id" class="col-form-label p-2 fs-5 fw-bold">Category List</label>
+                                        <label for="subcategory_id" class="col-form-label p-2 fs-5 fw-bold">Crops List</label>
 
                                         <div class="table-responsive">
                                             <table class="table table-borderless table">

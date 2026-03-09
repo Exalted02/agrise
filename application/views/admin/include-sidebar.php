@@ -145,7 +145,7 @@ if ($authentication_settings !== null && is_string($authentication_settings)) {
         <!-- Crops -->
         <?php if (has_permissions('read', 'crops')) { ?>
             <li
-                class="menu-item <?= ($current_url == base_url('admin/crops/create_crops') || ($current_url == base_url('admin/crops/crops-order'))) ? 'active open' : '' ?>">
+                class="menu-item <?= ($current_url == base_url('admin/crops/create_crops') || ($current_url == base_url('admin/crops/crops-order')) || ($current_url == base_url('admin/crops_step'))) ? 'active open' : '' ?>">
                 <a href="#" class="menu-link menu-toggle">
                     <i class="ion-icon-disc-outline text-primary"></i>
                     <div data-i18n="Layouts">Crops</div>
@@ -164,6 +164,14 @@ if ($authentication_settings !== null && is_string($authentication_settings)) {
                             class="menu-item <?= ($current_url == base_url('admin/crops/crops-order')) ? 'active' : '' ?>">
                             <a href="<?= base_url('admin/crops/crops-order') ?>" class="menu-link">
                                 <div data-i18n="Without menu">Crops Order</div>
+                            </a>
+                        </li>
+                    <?php } ?>
+                    <?php if (has_permissions('read', 'crops_order')) { ?>
+                        <li
+                            class="menu-item <?= ($current_url == base_url('admin/crops_step')) ? 'active' : '' ?>">
+                            <a href="<?= base_url('admin/crops_step') ?>" class="menu-link">
+                                <div data-i18n="Without menu">Crops Step</div>
                             </a>
                         </li>
                     <?php } ?>
