@@ -2213,12 +2213,12 @@ function get_categories_option_html($categories, $selected_vals = null, $edit_id
 function get_crop_categories_option_html($categories, $selected_vals = null, $edit_id = null)
 {
     $html = "";
-    for ($i = 1; $i < count($categories); $i++) {
+    for ($i = 1; $i <= count($categories); $i++) {
         if (!empty($edit_id) && $categories[$i] == $edit_id) {
             continue;
         }
-        $pre_selected = (!empty($selected_vals) && in_array($categories[$i], $selected_vals)) ? "selected" : "";
-        $html .= '<option value="' . $categories[$i] . '" class="l' . $categories[$i] . '" ' . $pre_selected . '  >' . output_escaping($categories[$i]) . '</option>';
+        $pre_selected = (!empty($selected_vals) && in_array($i, $selected_vals)) ? "selected" : "";
+        $html .= '<option value="' . $i . '" class="l' . $categories[$i] . '" ' . $pre_selected . '  >' . output_escaping($categories[$i]) . '</option>';
     }
     return $html;
 }

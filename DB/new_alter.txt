@@ -30,6 +30,12 @@ D:\xampp\htdocs\agrise\application\views\admin\include-sidebar.php
 D:\xampp\htdocs\agrise\application\controllers\admin\Crops.php (NEW)
 D:\xampp\htdocs\agrise\application\models\Crops_model.php (NEW)
 D:\xampp\htdocs\agrise\application\config\my-constants.php
+D:\xampp\htdocs\agrise\application\controllers\admin\Home.php
+D:\xampp\htdocs\agrise\application\helpers\function_helper.php
+D:\xampp\htdocs\agrise\application\views\admin\pages\forms\crops.php
+D:\xampp\htdocs\agrise\application\views\admin\pages\tables\crops-order.php
+D:\xampp\htdocs\agrise\assets\admin_old\custom\custom.js
+
 
 
 ---API LIST---

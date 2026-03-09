@@ -3728,6 +3728,30 @@ $(document).on('click', '#tree_view', function () {
         }
     })
 })
+// 3.Crops-Module
+$(document).on('click', '#crops_list_view', function () {
+    $('#crops_list_view_html').show()
+    $('#crops_tree_view_html').hide()
+})
+
+$(document).on('click', '#crops_tree_view', function () {
+
+    $('#crops_tree_view_html').show()
+    $('#crops_list_view_html').hide()
+
+    $.ajax({
+        type: 'GET',
+        url: base_url + 'admin/crops/get_crops',
+        dataType: 'json',
+        success: function (result) {
+            $('#crops_tree_view_html').jstree({
+                core: {
+                    data: result['data']
+                }
+            })
+        }
+    })
+})
 
 $(document).on('click', '.update_active_status', function () {
     var update_id = $(this).data('id')
@@ -3736,6 +3760,42 @@ $(document).on('click', '.update_active_status', function () {
     $.ajax({
         type: 'GET',
         url: base_url + 'admin/home/update_status',
+        data: {
+            id: update_id,
+            status: status,
+            table: table
+        },
+        dataType: 'json',
+        success: function (result) {
+            if (result['error'] == false) {
+                iziToast.success({
+                    message: '<span class="text-capitalize">' +
+                        result.message +
+                        '</span> Status Updated'
+                })
+                $('.table').bootstrapTable('refresh')
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            } else {
+                iziToast.error({
+                    message: '<span class="text-capitalize">' +
+                        result.message +
+                        '</span> Status Not Updated'
+                })
+                $('.table').bootstrapTable('refresh')
+            }
+        }
+    })
+})
+$(document).on('click', '.update_active_status_crops', function () {
+    var update_id = $(this).data('id')
+    var status = $(this).data('status')
+    var table = $(this).data('table')
+
+    $.ajax({
+        type: 'GET',
+        url: base_url + 'admin/home/crops_update_status',
         data: {
             id: update_id,
             status: status,
@@ -3814,6 +3874,51 @@ $(document).on('click', '.delete-categoty', function () {
                     url: base_url + 'admin/category/delete_category',
                     data: {
                         id: cat_id,
+                        [csrfName]: csrfHash
+                    },
+                    dataType: 'json'
+                })
+                    .done(function (response, textStatus) {
+                        if (response.error == false) {
+                            Swal.fire('Deleted!', response.message, 'success')
+                            $('table').bootstrapTable('refresh')
+                            csrfName = response['csrfName']
+                            csrfHash = response['csrfHash']
+                        } else {
+                            Swal.fire('Oops...', response.message, 'warning')
+                            $('table').bootstrapTable('refresh')
+                            csrfName = response['csrfName']
+                            csrfHash = response['csrfHash']
+                        }
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        Swal.fire('Oops...', 'Something went wrong with ajax !', 'error')
+                        csrfName = response['csrfName']
+                        csrfHash = response['csrfHash']
+                    })
+            })
+        },
+        allowOutsideClick: false
+    })
+})
+$(document).on('click', '.delete-crops', function () {
+    var crops_id = $(this).data('id')
+    Swal.fire({
+        title: 'Are You Sure!',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        showLoaderOnConfirm: true,
+        preConfirm: function () {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: 'GET',
+                    url: base_url + 'admin/crops/delete_crops',
+                    data: {
+                        id: crops_id,
                         [csrfName]: csrfHash
                     },
                     dataType: 'json'

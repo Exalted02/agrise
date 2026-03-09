@@ -146,6 +146,9 @@ define('INCLUDED', '2');
 define('EXCLUDED', '3');
 defined("DESCRIPTION_WORD_LIMIT") || define("DESCRIPTION_WORD_LIMIT", 150);
 
+// Database Tables
+define('TBL_CROP_MASTER','2026_crop_master');
+
 //custom array
 define('CROP_CATEGORIES', [
     1 => 'Cereals',

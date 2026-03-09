@@ -271,6 +271,30 @@ class Home extends CI_Controller
             redirect('admin/login', 'refresh');
         }
     }
+    public function crops_update_status()
+    {
+        if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {
+            $this->db->trans_start();
+			
+			$_GET['status'] = ($_GET['status'] == '1') ? 0 : 1;
+            $this->db->set('crop_status', $this->db->escape($_GET['status']));
+
+            $this->db->where('id', $_GET['id'])->update($_GET['table']);
+            $this->db->trans_complete();
+            $error = true;
+            $message = str_replace('_', ' ', $_GET['table']);
+            if ($this->db->trans_status() === true) {
+                $error = false;
+            }
+            $response['error'] = $error;
+            $response['csrfName'] = $this->security->get_csrf_token_name();
+            $response['csrfHash'] = $this->security->get_csrf_hash();
+            $response['message'] = $message;
+            print_r(json_encode($response));
+        } else {
+            redirect('admin/login', 'refresh');
+        }
+    }
 
     // send admin notification
     public function get_notification()

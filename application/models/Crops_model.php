@@ -10,138 +10,65 @@ class Crops_model extends CI_Model
     }
     public function get_crops($id = NULL, $limit = '', $offset = '', $sort = 'sort_order', $order = 'ASC', $slug = '', $ignore_status = '')
     {
-        /*$level = 0;
-        if ($ignore_status == 1) {
-            $where = (isset($id) && !empty($id)) ? ['c1.id' => $id] : ['c1.parent_id' => 0, 'c1.id !=' => 1];
-        } else {
-            $where = (isset($id) && !empty($id)) ? ['c1.id' => $id, 'c1.status' => 1] : ['c1.parent_id' => 0, 'c1.status' => 1];
-        }
-
-        $this->db->select('c1.*');
-        $this->db->where($where);
-        if (!empty($slug)) {
-            $this->db->where('c1.slug', $slug);
-        }
-        if ($has_child_or_item == 'false') {
-            $this->db->join('categories c2', 'c2.parent_id = c1.id', 'left');
-            $this->db->join('products p', ' p.category_id = c1.id', 'left');
-            $this->db->group_start();
-            $this->db->or_where(['c1.id ' => ' p.category_id ', ' c2.parent_id ' => ' c1.id '], NULL, FALSE);
-            $this->db->group_End();
-            $this->db->group_by('c1.id');
-        }
-
-        if (!empty($limit) || !empty($offset)) {
-            $this->db->offset($offset);
-            $this->db->limit($limit);
-        }
-
-        $this->db->order_by($sort ?? '', $order ?? '');
-
-        $parent = $this->db->get('categories c1');
-        $categories = $parent->result();
-        $count_res = $this->db->count_all_results('categories c1');
-        $i = 0;
-
-
-        foreach ($categories as $p_cat) {
-            $categories[$i]->children = $this->sub_categories($p_cat->id, $level);
-            $categories[$i]->text = output_escaping(str_replace('\r\n', '&#13;&#10;', $p_cat->name));
-            $categories[$i]->name =  output_escaping(str_replace('\r\n', '&#13;&#10;', $categories[$i]->name));
-            $categories[$i]->state = ['opened' => true];
-            $categories[$i]->icon = "jstree-folder";
-            $categories[$i]->level = $level;
-            $categories[$i]->image = get_image_url($categories[$i]->image, 'thumb', 'sm');
-            $categories[$i]->banner = get_image_url($categories[$i]->banner, 'thumb', 'md');
-            $i++;
-        }
-        if (isset($categories[0])) {
-            $categories[0]->total = $count_res;
-        }*/
-		
 		$categories = CROP_CATEGORIES;
         return  json_decode(json_encode($categories), 1);
     }
-
-    public function sub_categories($id, $level)
-    {
-        $level = $level + 1;
-        $this->db->select('c1.*');
-        $this->db->from('categories c1');
-        $this->db->where(['c1.parent_id' => $id, 'c1.status' => 1]);
-        $child = $this->db->get();
-        $categories = $child->result();
-        $i = 0;
-        foreach ($categories as $p_cat) {
-
-            $categories[$i]->children = $this->sub_categories($p_cat->id, $level);
-            $categories[$i]->text = output_escaping(str_replace('\r\n', '&#13;&#10;', $p_cat->name));
-            $categories[$i]->name = output_escaping(str_replace('\r\n', '&#13;&#10;', $p_cat->name));
-            $categories[$i]->state = ['opened' => true];
-            $categories[$i]->level = $level;
-            $categories[$i]->image = get_image_url($categories[$i]->image, 'thumb', 'md');
-            $categories[$i]->banner = get_image_url($categories[$i]->banner, 'thumb', 'md');
-            $i++;
+    public function get_crops_data()
+    {		
+        $sort = 'id';
+        $order = 'ASC';
+		$where = ['crop_status !=' => NULL];
+		if (isset($_GET['id']))
+            $where['id'] = $_GET['id'];
+		$search_res = $this->db->select(' * ');
+        if (isset($where) && !empty($where)) {
+            $search_res->where($where);
         }
-        return $categories;
+
+        $cat_search_res = $search_res->order_by($sort, "desc")->get(TBL_CROP_MASTER)->result_array();
+		
+		$data = [];
+
+		foreach ($cat_search_res as $row) {
+			$data[] = [
+				'id'   => $row['id'],
+				'text' => $row['crop_title'],
+				'crop_title' => $row['crop_title'],
+				'sort_order' => $row['sort_order'],
+				'crop_image' => $row['crop_image']
+			];
+		}
+
+		// $response['data'] = $data;
+
+		return  json_decode(json_encode($data), 1);
     }
 
-    public function delete_category($id)
+    public function delete_crops($id)
     {
         // Escape the ID to prevent SQL injection
         $id = escape_array($id);
     
-        // Check if the category is assigned to any products
-        $query = $this->db->where('category_id', $id)->get('products');
-        if ($query->num_rows() > 0) {
-            // If there are products associated with this category, return FALSE
-            return FALSE;
-        }    
-        if ($this->check_subcategories_have_products($id)) {
-            return FALSE;
-        }
-    
-        // If no products are associated, proceed with the deletion
+        // Proceed with the deletion
         $this->db->trans_start();
-        $this->db->where('id', $id)->delete('categories');
+        $this->db->where('id', $id)->delete(TBL_CROP_MASTER);
         $this->db->trans_complete();
     
         // Return the transaction status
         return $this->db->trans_status();
     }
 
-    private function check_subcategories_have_products($category_id)
-    {
-        $subcategories = $this->db->where('parent_id', $category_id)->get('categories')->result_array();
-        
-        foreach ($subcategories as $subcategory) {
-            $query = $this->db->where('category_id', $subcategory['id'])->get('products');
-            if ($query->num_rows() > 0) {
-                return TRUE;
-            }            
-            if ($this->check_subcategories_have_products($subcategory['id'])) {
-                return TRUE;
-            }
-        }
-        return FALSE;
-    }
-    public function check_subcategories_have_products_public($category_id)
-    {
-        return $this->check_subcategories_have_products($category_id);
-    }
-
-
-    public function get_category_list()
+    public function get_crops_list()
     {
         $offset = 0;
         $limit = 10;
         $sort = 'id';
         $order = 'ASC';
         $multipleWhere = '';
-        $where = ['status !=' => NULL];
+        $where = ['crop_status !=' => NULL];
 
         if (isset($_GET['id']))
-            $where['parent_id'] = $_GET['id'];
+            $where['id'] = $_GET['id'];
         if (isset($_GET['offset']))
             $offset = $_GET['offset'];
         if (isset($_GET['limit']))
@@ -158,7 +85,7 @@ class Crops_model extends CI_Model
 
         if (isset($_GET['search']) and $_GET['search'] != '') {
             $search = $_GET['search'];
-            $multipleWhere = ['`id`' => $search, '`name`' => $search];
+            $multipleWhere = ['`id`' => $search, '`crop_title`' => $search];
         }
 
         $count_res = $this->db->select(' COUNT(id) as `total` ');
@@ -169,7 +96,7 @@ class Crops_model extends CI_Model
         if (isset($where) && !empty($where)) {
             $count_res->where($where);
         }
-        $cat_count = $count_res->get('categories')->result_array();
+        $cat_count = $count_res->get(TBL_CROP_MASTER)->result_array();
 
         foreach ($cat_count as $row) {
             $total = $row['total'];
@@ -183,7 +110,7 @@ class Crops_model extends CI_Model
             $search_res->where($where);
         }
 
-        $cat_search_res = $search_res->order_by($sort, "desc")->limit($limit, $offset)->get('categories')->result_array();
+        $cat_search_res = $search_res->order_by($sort, "desc")->limit($limit, $offset)->get(TBL_CROP_MASTER)->result_array();
         $bulkData = array();
         $bulkData['total'] = $total;
         $rows = array();
@@ -199,36 +126,27 @@ class Crops_model extends CI_Model
               <i class="fas fa-ellipsis-v"></i>
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <a class="dropdown-item" href=' . base_url('admin/category/create_category') . '?edit_id=' . $row['id'] . '><i class="fa fa-pen"></i> Edit</a>
-              <a href="javascript:void(0)" class="delete-categoty dropdown-item" data-id=' . $row['id'] . ' title="Delete" ><i class="fa fa-trash"></i> Delete</a></div>';
+              <a class="dropdown-item" href=' . base_url('admin/crops/create_crops') . '?edit_id=' . $row['id'] . '><i class="fa fa-pen"></i> Edit</a>
+              <a href="javascript:void(0)" class="delete-crops dropdown-item" data-id=' . $row['id'] . ' title="Delete" ><i class="fa fa-trash"></i> Delete</a></div>';
 
             $tempRow['id'] = $row['id'];
 
-            $tempRow['name'] = output_escaping($row['name']);
-            if ($row['status'] == '1') {
-                $tempRow['status'] = '<a class="badge bg-success text-white" ></a>';
-                $tempRow['status'] .= '<a class="form-switch update_active_status " data-table="categories" title="Deactivate" href="javascript:void(0)" data-id="' . $row['id'] . '" data-status="' . $row['status'] . '" ><input class="form-check-input " type="checkbox" role="switch" checked></a>';
+            $tempRow['crop_title'] = output_escaping($row['crop_title']);
+            if ($row['crop_status'] == '1') {
+                $tempRow['crop_status'] = '<a class="badge bg-success text-white" ></a>';
+                $tempRow['crop_status'] .= '<a class="form-switch update_active_status_crops " data-table="'.TBL_CROP_MASTER.'" title="Deactivate" href="javascript:void(0)" data-id="' . $row['id'] . '" data-status="' . $row['crop_status'] . '" ><input class="form-check-input " type="checkbox" role="switch" checked></a>';
             } else {
-                $tempRow['status'] = '<a class="badge bg-danger text-white" ></a>';
-                $tempRow['status'] .= '<a class="form-switch update_active_status mr-1 mb-1" data-table="categories" title="Deactivate" href="javascript:void(0)" data-id="' . $row['id'] . '" data-status="' . $row['status'] . '" ><input class="form-check-input " type="checkbox" role="switch" ></a>';
+                $tempRow['crop_status'] = '<a class="badge bg-danger text-white" ></a>';
+                $tempRow['crop_status'] .= '<a class="form-switch update_active_status_crops mr-1 mb-1" data-table="'.TBL_CROP_MASTER.'" title="Deactivate" href="javascript:void(0)" data-id="' . $row['id'] . '" data-status="' . $row['crop_status'] . '" ><input class="form-check-input " type="checkbox" role="switch" ></a>';
             }
-            if (empty($row['image']) || file_exists(FCPATH  . $row['image']) == FALSE) {
-                $row['image'] = base_url() . NO_IMAGE;
+            if (empty($row['crop_image']) || file_exists(FCPATH  . $row['crop_image']) == FALSE) {
+                $row['crop_image'] = base_url() . NO_IMAGE;
                 $row['image_main'] = base_url() . NO_IMAGE;
             } else {
-                $row['image_main'] = base_url($row['image']);
-                $row['image'] = get_image_url($row['image'], 'thumb', 'sm');
+                $row['image_main'] = base_url($row['crop_image']);
+                $row['crop_image'] = get_image_url($row['crop_image'], 'thumb', 'sm');
             }
-            $tempRow['image'] = "<div class='image-box-100'><a href='" . $row['image_main'] . "' data-toggle='lightbox' data-gallery='gallery'> <img src='" . $row['image'] . "' class='h-25 w-75' ></a></div>";
-
-            if (empty($row['banner']) || file_exists(FCPATH  . $row['banner']) == FALSE) {
-                $row['banner'] = base_url() . NO_IMAGE;
-                $row['banner_main'] = base_url() . NO_IMAGE;
-            } else {
-                $row['banner_main'] = base_url($row['banner']);
-                $row['banner'] = get_image_url($row['banner'], 'thumb', 'sm');
-            }
-            $tempRow['banner'] = "<div class='image-box-100' > <a href='" . $row['banner_main'] . "' data-toggle='lightbox' data-gallery='gallery'> <img src='" . $row['banner'] . "' class='img-fluid w-50'></a></div>";
+            $tempRow['crop_image'] = "<div class='image-box-100'><a href='" . $row['image_main'] . "' data-toggle='lightbox' data-gallery='gallery'> <img src='" . $row['crop_image'] . "' class='h-25 w-75' ></a></div>";
 
             $tempRow['operate'] = $operate;
             $rows[] = $tempRow;
@@ -237,70 +155,45 @@ class Crops_model extends CI_Model
         print_r(json_encode($bulkData));
     }
 
-    public function add_category($data)
+    public function add_crops($data)
     {
         $data = escape_array($data);
 
-        if (isset($data['edit_category']) && !empty($data['edit_category'])) {
-            $category_id = fetch_details('categories', ['id' => $data['edit_category']]);
-            $category_name = $category_id[0]['name'];
+        if (isset($data['edit_crops']) && !empty($data['edit_crops'])) {
+            $crops_id = fetch_details(TBL_CROP_MASTER, ['id' => $data['edit_crops']]);
+            $crops_name = $crops_id[0]['crop_title'];
         } else {
-            $category_id = "";
-            $category_name = "";
+            $crops_id = "";
+            $crops_name = "";
         }
-        if ($category_name != $data['category_input_name']) {
+        if ($crops_name != $data['crop_title']) {
             $cat_data = [
-                'name' => $data['category_input_name'],
-                'parent_id' => (isset($data['category_parent']) && !empty($data['category_parent'])) ? $data['category_parent'] : '0',
-                'slug' => create_unique_slug($data['category_input_name'], 'categories'),
-                'status' => '1',
+                'crop_title' => $data['crop_title'],
+                'crop_category_id' => (isset($data['crop_category_id']) && !empty($data['crop_category_id'])) ? $data['crop_category_id'] : '0',
+                'crop_status' => '1',
             ];
         } else {
             $cat_data = [
-                'name' => $data['category_input_name'],
-                'parent_id' => (isset($data['category_parent']) && !empty($data['category_parent'])) ? $data['category_parent'] : '0',
-                'status' => '1',
+                'crop_title' => $data['crop_title'],
+                'crop_category_id' => (isset($data['crop_category_id']) && !empty($data['crop_category_id'])) ? $data['crop_category_id'] : '0',
+                'crop_status' => '1',
             ];
         }
 
-        if (isset($data['edit_category']) && !empty($data['edit_category'])) {
+        if (isset($data['edit_crops']) && !empty($data['edit_crops'])) {
 
-            unset($cat_data['status']);
-            if (isset($data['category_input_image']) && !empty($data['category_input_image'])) {
-                $cat_data['image'] = $data['category_input_image'];
+            unset($cat_data['crop_status']);
+            if (isset($data['crops_input_image']) && !empty($data['crops_input_image'])) {
+                $cat_data['crop_image'] = $data['crops_input_image'];
             }
 
-            $cat_data['banner'] = (isset($data['banner'])) ? $data['banner'] : '';
-
-            $this->db->set($cat_data)->where('id', $data['edit_category'])->update('categories');
+            $this->db->set($cat_data)->where('id', $data['edit_crops'])->update(TBL_CROP_MASTER);
         } else {
-            if (isset($data['category_input_image']) && ($data['category_input_image'])) {
-                $cat_data['image'] = $data['category_input_image'];
+            if (isset($data['crops_input_image']) && ($data['crops_input_image'])) {
+                $cat_data['crop_image'] = $data['crops_input_image'];
             }
-            if (isset($data['banner']) && !empty($data['banner'])) {
-                $cat_data['banner'] = (isset($data['banner']) && !empty($data['banner'])) ? $data['banner'] : '';
-            }
-            $this->db->insert('categories', $cat_data);
+            $this->db->insert(TBL_CROP_MASTER, $cat_data);
         }
     }
 
-    public function top_category()
-    {
-        $query = $this->db->select('*')
-            ->where('status', 1)
-            ->limit('4')
-            ->order_by('clicks', 'Desc')
-            ->get('categories');
-
-        $data['total'] = $query->num_rows();
-        $data['rows'] = $query->result_array();
-
-        print_r(json_encode($data));
-    }
-    public function get_products_by_category($category_id)
-    {
-        $this->db->where('category_id', $category_id);
-        $query = $this->db->get('products'); // Assuming 'products' is your table name
-        return $query->result_array();
-    }
 }

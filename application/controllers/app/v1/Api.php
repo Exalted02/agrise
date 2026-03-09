@@ -7360,7 +7360,7 @@ Defined Methods:-
 			$data[$category_id]['crops'][] = [
 				'crop_id'     => $row['id'],
 				'crop_title'  => $row['crop_title'],
-				'crop_image'  => $row['crop_image'],
+				'crop_image'  => base_url($row['crop_image']),
 			];
 		}
 

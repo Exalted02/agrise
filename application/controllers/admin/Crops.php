@@ -23,8 +23,8 @@ class Crops extends CI_Controller
 
     public function get_crops()
     {
-        $ignore_status = isset($_GET['ignore_status']) && $_GET['ignore_status'] == 1 ? 1 : '';
-        $response['data'] = $this->data['category_result'] = $this->crops_model->get_crops(NULL, '', '', 'row_order', 'ASC', '', $ignore_status);
+        // $ignore_status = isset($_GET['ignore_status']) && $_GET['ignore_status'] == 1 ? 1 : '';
+        $response['data'] = $this->data['category_result'] = $this->crops_model->get_crops_data();
         echo json_encode($response);
         return;
     }
@@ -59,11 +59,11 @@ class Crops extends CI_Controller
     public function crops_order()
     {
         if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {
-            $this->data['main_page'] = TABLES . 'category-order';
+            $this->data['main_page'] = TABLES . 'crops-order';
             $settings = get_settings('system_settings', true);
-            $this->data['title'] = 'Category Order | ' . $settings['app_name'];
-            $this->data['meta_description'] = 'Category Order | ' . $settings['app_name'];
-            $this->data['categories'] = $this->crops_model->get_crops();
+            $this->data['title'] = 'Crops Order | ' . $settings['app_name'];
+            $this->data['meta_description'] = 'Crops Order | ' . $settings['app_name'];
+            $this->data['categories'] = $this->crops_model->get_crops_data();
             $this->load->view('admin/template', $this->data);
         } else {
             redirect('admin/login', 'refresh');
@@ -77,37 +77,18 @@ class Crops extends CI_Controller
             if (print_msg(!has_permissions('delete', 'crops'), PERMISSION_ERROR_MSG, 'crops')) {
                 return false;
             }
-    
-            $category_id = $this->input->get('id', TRUE); // Get the category ID from the GET request
-    
-            // Fetch products associated with the category
-            $products = $this->crops_model->get_products_by_category($category_id);
-            
-            $product_status = '1'; // Default to active
-            foreach ($products as $product) {
-                if ($product['status'] == '0') {
-                    $product_status = '0'; // Found a deactivated product
-                    break;
-                }
-            }
-    
-            if ($product_status == '0') {
-                // If any associated product is deactivated
-                $this->response['error'] = true;
-                $this->response['message'] = '';
-            } else {
-                // Proceed with deletion
-                $delete_status = $this->crops_model->delete_category($category_id);
-                
-                if ($delete_status) {
-                    $this->response['error'] = false;
-                    $this->response['message'] = 'Category deleted successfully.';
-                } else {
-                    $this->response['error'] = true;
-                    $this->response['message'] = 'Category is assigned to products or has subcategories with products, therefore cannot be deleted.';
-                }
-            }
-    
+			
+			$id = $this->input->get('id', TRUE); // Get the ID from the GET request
+			
+			$delete_status = $this->crops_model->delete_crops($id);
+			if ($delete_status) {
+				$this->response['error'] = false;
+				$this->response['message'] = 'Crops deleted successfully.';
+			} else {
+				$this->response['error'] = true;
+				$this->response['message'] = 'Crops not deleted, pleaqse try again.';
+			}
+			    
             $this->response['csrfName'] = $this->security->get_csrf_token_name();
             $this->response['csrfHash'] = $this->security->get_csrf_hash();
             print_r(json_encode($this->response));
@@ -122,7 +103,7 @@ class Crops extends CI_Controller
     {
         if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {
 
-            return $this->crops_model->get_category_list();
+            return $this->crops_model->get_crops_list();
         } else {
             redirect('admin/login', 'refresh');
         }
@@ -134,8 +115,8 @@ class Crops extends CI_Controller
     {
         if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {
     
-            $edit_category = $this->input->post('edit_category', true);
-            if (null !== $edit_category) {
+            $edit_crops = $this->input->post('edit_crops', true);
+            if (null !== $edit_crops) {
                 if (print_msg(!has_permissions('update', 'crops'), PERMISSION_ERROR_MSG, 'crops')) {
                     return false;
                 }
@@ -145,14 +126,15 @@ class Crops extends CI_Controller
                 }
             }
             
-            $this->form_validation->set_rules('category_input_name', 'Category Name', 'trim|required|xss_clean');
-            $this->form_validation->set_rules('banner', 'Banner', 'trim|xss_clean');
+            $this->form_validation->set_rules('crop_title', 'Crop Title', 'trim|required|xss_clean');
+            $this->form_validation->set_rules('crop_category_id', 'Crop Category', 'trim|required|xss_clean');
+            // $this->form_validation->set_rules('banner', 'Banner', 'trim|xss_clean');
     
-            $editCategory = $this->input->post('edit_category', true);
+            $editCategory = $this->input->post('edit_crops', true);
             if (isset($editCategory) && !empty($editCategory)) {
-                 $this->form_validation->set_rules('category_input_image', 'Image', 'trim|xss_clean');
+                 $this->form_validation->set_rules('crops_input_image', 'Image', 'trim|xss_clean');
             } else {
-                $this->form_validation->set_rules('category_input_image', 'Category Image', 'trim|required|xss_clean');
+                $this->form_validation->set_rules('crops_input_image', 'Category Image', 'trim|required|xss_clean');
             }
     
             if (!$this->form_validation->run()) {
@@ -162,46 +144,43 @@ class Crops extends CI_Controller
                 $this->response['message'] = validation_errors();
                 print_r(json_encode($this->response));
             } else {
-                // Check if category name already exists
-                $edit_category = $this->input->post('edit_category', true);
-                if (null !== $edit_category) {
-                    if (is_exist(['name' => $this->input->post('category_input_name', true)], 'categories', $this->input->post('edit_category', true))) {
+                // Check if crop_title already exists
+                $edit_crops = $this->input->post('edit_crops', true);
+                if (null !== $edit_crops) {
+                    if (is_exist(['crop_title' => $this->input->post('crop_title', true)], TBL_CROP_MASTER, $this->input->post('edit_crops', true))) {
                         $response["error"] = true;
                         $response['csrfName'] = $this->security->get_csrf_token_name();
                         $response['csrfHash'] = $this->security->get_csrf_hash();
-                        $response["message"] = "Category Name Already Exists!";
+                        $response["message"] = "Crop Already Exists!";
                         $response["data"] = array();
                         echo json_encode($response);
                         return false;
                     }
                 } else {
-                    if (is_exist(['name' =>$this->input->post('category_input_name', true)], 'categories')) {
+                    if (is_exist(['crop_title' =>$this->input->post('crop_title', true)], TBL_CROP_MASTER)) {
                         $response["error"] = true;
                         $response['csrfName'] = $this->security->get_csrf_token_name();
                         $response['csrfHash'] = $this->security->get_csrf_hash();
-                        $response["message"] = "Category Name Already Exists!";
+                        $response["message"] = "Crop Already Exists!";
                         $response["data"] = array();
                         echo json_encode($response);
                         return false;
                     }
                 }
 
-                // Proceed to add or update the category
+                // Proceed to add or update the crop
                 $data = array(
-                    'edit_category' => $this->input->post('edit_category', true),
-                    'categories' => $this->input->post('categories', true),
-                    'category_input_name' => $this->input->post('category_input_name', true),
-                    'category_input_image' => $this->input->post('category_input_image', true),
-                    'category_parent' => $this->input->post('category_parent', true),
-
-                    'banner' => $this->input->post('banner', true),
+                    'edit_crops' => $this->input->post('edit_crops', true),
+                    'crop_category_id' => $this->input->post('crop_category_id', true),
+                    'crop_title' => $this->input->post('crop_title', true),
+                    'crops_input_image' => $this->input->post('crops_input_image', true),
                 );
 
-                $this->crops_model->add_category($data);
+                $this->crops_model->add_crops($data);
                 $this->response['error'] = false;
                 $this->response['csrfName'] = $this->security->get_csrf_token_name();
                 $this->response['csrfHash'] = $this->security->get_csrf_hash();
-                $message = (null !== $this->input->post('edit_category', true)) ? 'Category Updated Successfully' : 'Category Added Successfully';
+                $message = (null !== $this->input->post('edit_crops', true)) ? 'Crop Updated Successfully' : 'Crop Added Successfully';
                 $this->response['message'] = $message;
                 $this->response['reload'] = true;
                 print_r(json_encode($this->response));
