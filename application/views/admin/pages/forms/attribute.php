@@ -28,15 +28,19 @@
                                         <input type="hidden" name="edit_attribute" value="<?= @$fetched_data[0]['id'] ?>">
                                     <?php } ?>
                                     <div class="d-flex flex-wrap form-group gap-2">
-                                        <label for="attribute_set" class="col-sm-3 col-form-label">Select Attribute Set <span class='text-danger text-sm'>*</span></label>
+                                        <label for="attribute_set" class="col-sm-3 col-form-label">Select Service <span class='text-danger text-sm'>*</span></label>
                                         <div class="col-sm-5">
-                                            <select class="form-control" id="attribute_set" name="attribute_set">
+                                            <select class="form-control" id="service_id" name="service_id">
                                                 <option value=""> None </option>
-                                                <?php foreach ($attribute_set as $row) { ?>
-                                                    <option value="<?= $row['id'] ?>" <?= (isset($fetched_data[0]['attribute_set_id']) && $fetched_data[0]['attribute_set_id'] == $row['id']) ? 'selected' : '' ?>> <?= $row['name'] ?> </option>
+                                                <?php foreach ($services_master as $row) { ?>
+                                                    <option value="<?= $row['id'] ?>"> <?= $row['service_title'] ?> </option>
                                                 <?php } ?>
                                             </select>
+											<span class="text-danger"><?php echo form_error('service_id'); ?></span>
                                         </div>
+										
+										
+										
                                         <?php if (empty($fetched_data[0]['id'])) { ?>
                                             <div class="col-md-3">
                                                 <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#attributeSet_add"><i class="fas fa-plus"></i></a>
@@ -44,19 +48,50 @@
                                             </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-group row mt-2">
-                                        <label for="name" class="col-sm-3 col-form-label">Attribute Name <span class='text-danger text-sm'>*</span></label>
+									
+									
+									
+									<div class="form-group row mt-2">
+										<label for="attribute_set" class="col-sm-3 col-form-label">Select Crops <span class='text-danger text-sm'>*</span></label>
+											<div class="col-sm-5">
+												<select class="form-control" id="crop_id" name="crop_id">
+													<option value=""> None </option>
+													<?php foreach ($crop_master as $row) { ?>
+														<option value="<?= $row['id'] ?>"> <?= $row['crop_title'] ?> </option>
+													<?php } ?>
+												</select>
+												<span class="text-danger"><?php echo form_error('crop_id'); ?></span>
+											</div>
+                                    </div>
+									
+                                    <div class="form-group row mt-1">
+                                        <label for="name" class="col-sm-3 col-form-label">Title <span class='text-danger text-sm'>*</span></label>
                                         <div class="col-sm-5">
-                                            <input type="text" class="form-control" id="name" placeholder="Name" name="name" value="<?= @$fetched_data[0]['name'] ?>">
+                                            <input type="text" class="form-control" id="steps_title" placeholder="Name" name="steps_title" value="<?= @$fetched_data[0]['steps_title'] ?>">
                                         </div>
                                     </div> <!-- attribute value  -->
-                                    <div class="form-group row mb-3">
+									
+									<div class="form-group row mt-2">
+                                        <label for="name" class="col-sm-3 col-form-label">No. of days <span class='text-danger text-sm'>*</span></label>
+                                        <div class="col-sm-5">
+                                            <input type="text" class="form-control" id="no_of_days" placeholder="Name" name="no_of_days" value="<?= @$fetched_data[0]['no_of_days'] ?>">
+                                        </div>
+                                    </div>
+									
+									<div class="form-group row mt-2">
+                                        <label for="name" class="col-sm-3 col-form-label">Step images<span class='text-danger text-sm'>*</span></label>
+                                        <div class="col-sm-5">
+                                            <input type="file" id="steps_image" name="steps_image" class="form-control">
+                                        </div>
+                                    </div>
+									
+                                    <!--<div class="form-group row mb-3">
                                         <label for="name" class="col-sm-3 col-form-label mt-2">Attribute Values <span class='text-danger text-sm'>*</span></label>
                                         <div class="col-md-4 mt-3">
                                             <button type="button" id="add_attribute_value" class="btn btn-sm btn-primary">Attribute Values</button>
                                         </div>
                                     </div>
-                                    <div id="attribute_section"></div>
+                                    <div id="attribute_section"></div>-->
                                     <br>
 
                                     <div class="form-group">

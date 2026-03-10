@@ -117,20 +117,47 @@ class Attribute_model extends CI_Model
     public function add_attributes($data)
     {
         $data = escape_array($data);
-        $attr_data = [
-            'name' => $data['name'],
-            'attribute_set_id' => $data['attribute_set'],
-            'status' => '1'
+        
+		
+		
+		if (!empty($_FILES['steps_image']['name'])) {
+				$config['upload_path'] = 'uploads/attributes/';
+				$config['allowed_types'] = 'jpg|jpeg|png|gif';
+				$config['file_name'] = $_FILES['steps_image']['name'];
+
+				//Load upload library and initialize configuration
+				$this->load->library('upload', $config);
+				$this->upload->initialize($config);
+
+				if ($this->upload->do_upload('steps_image')) {
+					$uploadData = $this->upload->data();
+					$picture = $uploadData['file_name'];
+				} else {
+					$picture = '';
+				}
+			} else {
+				$picture = null;
+			}
+			
+		$attr_data = [
+            'service_id' => $data['service_id'],
+            'crop_id' => $data['crop_id'],
+            'steps_title' => $data['steps_title'],
+            'no_of_days' => $data['no_of_days'],
+            'steps_image' => $picture
+            
         ];
+		
+		
         if (isset($data['edit_attribute']) && !empty($data['edit_attribute'])) {
             $this->db->set($attr_data)->where('id', $data['edit_attribute'])->update('attributes');
         } else {
-            $this->db->insert('attributes', $attr_data);
+            $this->db->insert(TBL_CROP_STEPS, $attr_data);
         }
 
-        $attribute_id = $this->db->get_where('attributes', array('name' => $data['name']))->result_array();
+        //$attribute_id = $this->db->get_where('attributes', array('name' => $data['name']))->result_array();
 
-        for ($i = 0; $i < count($data['attribute_value']); $i++) {
+        /*for ($i = 0; $i < count($data['attribute_value']); $i++) {
             $attr_val = [
                 'attribute_id' => $attribute_id[0]['id'],
                 'value' => $data['attribute_value'][$i],
@@ -144,7 +171,7 @@ class Attribute_model extends CI_Model
             } else {
                 $this->db->insert('attribute_values', $attr_val);
             }
-        }
+        }*/
     }
 
 

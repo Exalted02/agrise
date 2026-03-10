@@ -27,6 +27,10 @@ class Attributes extends CI_Controller
                 $this->data['fetched_data'] = fetch_details('attributes', ['id' => $_GET['edit_id']]);
             }
             $this->data['attribute_set'] = fetch_details('attribute_set',  ['status' => 1]);
+            $this->data['services_master'] = fetch_details(TBL_SERVICE_MASTER);
+			$this->data['crop_master'] = fetch_details(TBL_CROP_MASTER);
+			//$aa = fetch_details(TBL_CROP_MASTER);
+			//echo "<pre>";print_r($aa);die;
 
             $this->load->view('admin/template', $this->data);
         } else {
@@ -49,6 +53,8 @@ class Attributes extends CI_Controller
 
     public function add_attributes()
     {
+		//echo "<pre>";print_r($this->input->post());die;
+		
         if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {
             $edit_attribute = $this->input->post('edit_attribute', true);
             if (null !== $edit_attribute) {
@@ -74,16 +80,18 @@ class Attributes extends CI_Controller
                 }
             }
             
-            if ($swatche_type[0] == 1) {
+            /*if ($swatche_type[0] == 1) {
                 $swatch_label = 'Attribute Color';
             } elseif ($swatche_type[0] == 2) {
                 $swatch_label = 'Attribute Image';
             } else {
                 $swatch_label = 'Attribute Value';
-            }
-            $this->form_validation->set_rules('name', 'Name', 'trim|required|xss_clean');
-            $this->form_validation->set_rules('attribute_set', 'Attribute set', 'trim|required|xss_clean');
-            $this->form_validation->set_rules('attribute_value[]', 'Attribute Value', 'trim|required|xss_clean');
+            }*/
+			
+			//echo 'hello whow are you';die;
+           // $this->form_validation->set_rules('name', 'Name', 'trim|required|xss_clean');
+            $this->form_validation->set_rules('service_id', 'Service', 'trim|required|xss_clean');
+            $this->form_validation->set_rules('crop_id', 'crop', 'trim|required|xss_clean');
             
             // Only validate swatche_value[] if any swatch type requires color or image
             if ($has_color_or_image) {
