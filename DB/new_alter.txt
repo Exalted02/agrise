@@ -56,3 +56,7 @@ POST method - https://krushitirth.com/app/v1/api/get_crop_steps
 post fields are - service_id,
 		  crop_id,
 		  date (Y-m-d - 2026-03-05)
+
+POST method - https://krushitirth.com/app/v1/api/get_services_dbt
+post fields are - parent_id
+
