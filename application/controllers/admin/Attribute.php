@@ -15,6 +15,7 @@ class Attribute extends CI_Controller
 			redirect('admin/home', 'refresh');
 		}
 	}
+	
 
 	public function index()
 	{
@@ -111,13 +112,16 @@ class Attribute extends CI_Controller
 			redirect('admin/login', 'refresh');
 		}
 	}
-
+	
 	public function attribute_list()
 	{
+		echo 'hello';die;
 		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {
 			return $this->attribute_model->get_attribute_list();
 		} else {
 			redirect('admin/login', 'refresh');
 		}
 	}
+
+	
 }

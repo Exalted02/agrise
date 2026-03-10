@@ -115,4 +115,12 @@ class Attribute_set extends CI_Controller
             redirect('admin/login', 'refresh');
         }
     }
+	public function attribute_list()
+	{
+		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {
+			return $this->attribute_model->get_attribute_list();
+		} else {
+			redirect('admin/login', 'refresh');
+		}
+	}
 }
