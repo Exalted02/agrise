@@ -150,6 +150,7 @@ defined("DESCRIPTION_WORD_LIMIT") || define("DESCRIPTION_WORD_LIMIT", 150);
 define('TBL_CROP_MASTER','2026_crop_master');
 define('TBL_SERVICE_MASTER','2026_services');
 define('TBL_CROP_STEPS','2026_crop_steps');
+define('TBL_DBT_SERVICE','2026_dbt_service');
 
 //custom array
 define('CROP_CATEGORIES', [

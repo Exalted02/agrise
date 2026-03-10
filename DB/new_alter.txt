@@ -21,6 +21,14 @@ CREATE TABLE `2026_crop_step_details` (
 ALTER TABLE `2026_crop_steps` ADD `steps_image` VARCHAR(255) NULL DEFAULT NULL AFTER `no_of_days`;
 ALTER TABLE `2026_crop_step_details` ADD `preventive_measures_details` LONGTEXT NULL DEFAULT NULL AFTER `step_details`, ADD `control_measures_details` LONGTEXT NULL DEFAULT NULL AFTER `preventive_measures_details`;
 
+CREATE TABLE `2026_dbt_service` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
 
 ---New Table---
 
