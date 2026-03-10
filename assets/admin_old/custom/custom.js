@@ -10912,7 +10912,53 @@ $(document).ready(function () {
             loadInventoryChart();
         });
     }
-})
+});
+
+$(document).on('click', '.delete-cropstep', function () {
+    var crops_id = $(this).data('id')
+    Swal.fire({
+        title: 'Are You Sure!',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        showLoaderOnConfirm: true,
+        preConfirm: function () {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: 'GET',
+                    url: base_url + 'admin/crops_step/delete_cropstep',
+                    data: {
+                        id: crops_id,
+                        [csrfName]: csrfHash
+                    },
+                    dataType: 'json'
+                })
+                    .done(function (response, textStatus) {
+                        if (response.error == false) {
+                            Swal.fire('Deleted!', response.message, 'success')
+                            $('table').bootstrapTable('refresh')
+                            csrfName = response['csrfName']
+                            csrfHash = response['csrfHash']
+                        } else {
+                            Swal.fire('Oops...', response.message, 'warning')
+                            $('table').bootstrapTable('refresh')
+                            csrfName = response['csrfName']
+                            csrfHash = response['csrfHash']
+                        }
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        Swal.fire('Oops...', 'Something went wrong with ajax !', 'error')
+                        csrfName = response['csrfName']
+                        csrfHash = response['csrfHash']
+                    })
+            })
+        },
+        allowOutsideClick: false
+    })
+});
 
 $(document).ready(function () {
     $('#base_price').on('input', function () {

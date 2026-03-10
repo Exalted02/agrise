@@ -58,7 +58,7 @@
                                             <div class="container-fluid row image-upload-section">
                                                 <div class="col-md-3 col-sm-12 shadow p-3 mb-5 bg-white rounded m-4 text-center grow image">
                                                     <div class='image-upload-div'><img class="img-fluid mb-2" src="<?= BASE_URL() . $fetched_data[0]['crop_image'] ?>" alt="Image Not Found"></div>
-                                                    <input type="hidden" name="crops_input_image" value='<?= $fetched_data[0]['crop_image'] ?>'>
+                                                    <input type="hidden" name="crops_input_image" value='<?php echo $fetched_data[0]['crop_image'] ?>'>
                                                 </div>
                                             </div>
                                         <?php
