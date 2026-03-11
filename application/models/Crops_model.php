@@ -196,39 +196,71 @@ class Crops_model extends CI_Model
         }
     }
 	
-	public function add_cropstep($data)
+	public function add_cropstep($data='', $files='')
     {
         $data = escape_array($data);
 		
+		//echo "<pre>";print_r($files);
+		//echo "<pre>";print_r($data);die;
 		
-		if (!empty($_FILES['steps_image']['name'])) {
-				$config['upload_path'] = 'uploads/cropstep/';
-				$config['allowed_types'] = 'jpg|jpeg|png|gif';
-				$config['file_name'] = $_FILES['steps_image']['name'];
-
-				//Load upload library and initialize configuration
-				$this->load->library('upload', $config);
-				$this->upload->initialize($config);
-
-				if ($this->upload->do_upload('steps_image')) {
-					$uploadData = $this->upload->data();
-					$picture = $uploadData['file_name'];
-				} else {
-					$picture = '';
-				}
-			} else {
-				$picture = null;
-			}
-			
 		$cropstep_data = [
             'service_id' => $data['service_id'],
             'crop_id' => $data['crop_id'],
             'steps_title' => $data['steps_title'],
             'no_of_days' => $data['no_of_days'],
             'steps_image' => $data['cropstep_input_image']
-            
         ];
 		
+		$arr = array();
+		foreach($data['description'] as $val)
+		{
+			if($val != '')
+			{
+				$arr['description'][] = $val; //description
+				
+			}
+		}
+		$arr['preventive'] = $data['preventive'][0];
+		$arr['control'] = $data['control'][0];
+		
+		
+		//echo "<pre>";print_r($arr);die;
+		$desc_count = count($arr['description']);
+		
+		if($desc_count == 1)
+		{
+			$count = count($files['images']['name']);
+
+			for ($i = 0; $i < $count; $i++) {
+
+				// Skip empty upload
+				if ($files['images']['error'][$i] == 4) {
+					continue;
+				}
+
+				$_FILES['file']['name']     = $files['images']['name'][$i];
+				$_FILES['file']['type']     = $files['images']['type'][$i];
+				$_FILES['file']['tmp_name'] = $files['images']['tmp_name'][$i];
+				$_FILES['file']['error']    = $files['images']['error'][$i];
+				$_FILES['file']['size']     = $files['images']['size'][$i];
+
+				$config['upload_path']   = 'uploads/cropstep/';
+				$config['allowed_types'] = 'jpg|jpeg|png|gif';
+
+				$this->load->library('upload', $config);
+				$this->upload->initialize($config);
+
+				if ($this->upload->do_upload('file')) {
+
+					$uploadData = $this->upload->data();
+					$picture = $uploadData['file_name'];
+
+				} else {
+
+					echo $this->upload->display_errors();
+				}
+			}
+		}
         
 		if (isset($data['edit_cropstep']) && !empty($data['edit_cropstep'])) {
 			$this->db->set($cropstep_data)->where('id', $data['edit_cropstep'])->update(TBL_CROP_STEPS);
@@ -236,10 +268,62 @@ class Crops_model extends CI_Model
 		else
 		{
 			$this->db->insert(TBL_CROP_STEPS, $cropstep_data);
+			$last_added_id = $this->db->insert_id();
+			
+			foreach($arr['description'] as $k=>$val)
+			{
+				
+				// file upload 
+				
+				 // Skip empty upload
+				/*if ($files['images']['error'][$k] == 4) {
+					continue;
+				}*/
+				if($desc_count>1)
+				{
+					$picture = null;
+					
+					$_FILES['file']['name']     = $files['images']['name'][$k];
+					$_FILES['file']['type']     = $files['images']['type'][$k];
+					$_FILES['file']['tmp_name'] = $files['images']['tmp_name'][$k];
+					$_FILES['file']['error']    = $files['images']['error'][$k];
+					$_FILES['file']['size']     = $files['images']['size'][$k];
+
+					$config['upload_path']   = 'uploads/cropstep/';
+					$config['allowed_types'] = 'jpg|jpeg|png|gif';
+
+					$this->load->library('upload', $config);
+					$this->upload->initialize($config);
+
+					if ($this->upload->do_upload('file')) {
+
+						$uploadData = $this->upload->data();
+						$picture = $uploadData['file_name'];
+
+					} 
+					/*else {
+
+						echo $this->upload->display_errors();
+					}*/
+				}
+				
+				// end file upload
+				
+				$cropstep_details_data = [
+					'crop_step_id' => $last_added_id,
+					'image' => $picture,
+					'step_details' => $val,
+					'preventive_measures_details' => $arr['preventive'],
+					'control_measures_details' => $arr['control']
+					
+				];
+				
+				$this->db->insert(TBL_CROP_STEPS_DETAILS, $cropstep_details_data);
+			}
 		}
 		
 		
-		
+		// end code
 		
         /*if (isset($data['edit_attribute']) && !empty($data['edit_attribute'])) {
             $this->db->set($attr_data)->where('id', $data['edit_attribute'])->update('attributes');
@@ -264,6 +348,25 @@ class Crops_model extends CI_Model
                 $this->db->insert('attribute_values', $attr_val);
             }
         }*/
+		
+		/*if (!empty($_FILES['steps_image']['name'])) {
+				$config['upload_path'] = 'uploads/cropstep/';
+				$config['allowed_types'] = 'jpg|jpeg|png|gif';
+				$config['file_name'] = $_FILES['steps_image']['name'];
+
+				//Load upload library and initialize configuration
+				$this->load->library('upload', $config);
+				$this->upload->initialize($config);
+
+				if ($this->upload->do_upload('steps_image')) {
+					$uploadData = $this->upload->data();
+					$picture = $uploadData['file_name'];
+				} else {
+					$picture = '';
+				}
+			} else {
+				$picture = null;
+			}*/
     }
 	
 	public function get_cropstep_list($offset = 0, $limit = 10, $sort = 'id', $order = 'ASC')

@@ -121,6 +121,7 @@ class Crops_step extends CI_Controller
 	
 	public function add_crops()
 	{
+		//echo "<pre>";print_r($_FILES);
 		//echo "<pre>";print_r($_POST);die;
 		 if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {
             $edit_cropstep = $this->input->post('edit_cropstep', true);
@@ -159,15 +160,15 @@ class Crops_step extends CI_Controller
            // $this->form_validation->set_rules('name', 'Name', 'trim|required|xss_clean');
             $this->form_validation->set_rules('service_id', 'Service', 'trim|required|xss_clean');
             $this->form_validation->set_rules('crop_id', 'crop', 'trim|required|xss_clean');
-            $this->form_validation->set_rules('crop_id', 'crop', 'trim|required|xss_clean');
+            //$this->form_validation->set_rules('crop_id', 'crop', 'trim|required|xss_clean');
             $this->form_validation->set_rules('steps_title', 'Title', 'trim|required|xss_clean');
-            $this->form_validation->set_rules('no_of_days', 'No of days', 'trim|required|xss_clean');
+            //$this->form_validation->set_rules('no_of_days', 'No of days', 'trim|required|xss_clean');
             
             // Only validate swatche_value[] if any swatch type requires color or image
-            if ($has_color_or_image) {
+            /*if ($has_color_or_image) {
                 $this->form_validation->set_rules('swatche_value[]', $swatch_label, 'trim|required|xss_clean');
             }
-            $swatche_type = $this->input->post('swatche_type', true);
+            $swatche_type = $this->input->post('swatche_type', true);*/
 
             if (!$this->form_validation->run()) {
                 $this->response['error'] = true;
@@ -179,7 +180,7 @@ class Crops_step extends CI_Controller
 				
 				//$edit_crops = $this->input->post('edit_cropstep', true);
 				//echo "<pre>";print_r($_POST);die;
-                $this->crops_model->add_cropstep($_POST);
+                $this->crops_model->add_cropstep($_POST, $_FILES);
                 $this->response['error'] = false;
                 $this->response['csrfName'] = $this->security->get_csrf_token_name();
                 $this->response['csrfHash'] = $this->security->get_csrf_hash();

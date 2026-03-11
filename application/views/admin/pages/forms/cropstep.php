@@ -18,7 +18,7 @@
 
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-12">
                     <div class="card card-info">
                         <!-- form start -->
                         <form class="form-horizontal form-submit-event" action="<?= base_url('admin/crops_step/add_crops'); ?>" method="POST" enctype="multipart/form-data">
@@ -30,7 +30,7 @@
                                     <div class="d-flex flex-wrap form-group gap-2">
                                         <label for="attribute_set" class="col-sm-3 col-form-label">Select Service <span class='text-danger text-sm'>*</span></label>
                                         <div class="col-sm-5">
-                                            <select class="form-control" id="service_id" name="service_id">
+                                            <select class="form-control" id="service_id" name="service_id" onchange="select_service(this.value);">
                                                 <option value=""> None </option>
                                                 <?php foreach ($services_master as $row) { ?>
                                                     <option value="<?= $row['id'] ?>" <?php echo  isset($fetched_data[0]['service_id']) && $fetched_data[0]['service_id'] == $row['id'] ? 'selected' : ''; ?>> <?= $row['service_title']; ?> </option>
@@ -52,7 +52,7 @@
 									
 									
 									<div class="form-group row mt-2">
-										<label for="attribute_set" class="col-sm-3 col-form-label">Select Crops <span class='text-danger text-sm'>*</span></label>
+										<label for="attribute_set" class="col-sm-3 col-form-label">Select Crops </label>
 											<div class="col-sm-5">
 												<select class="form-control" id="crop_id" name="crop_id">
 													<option value=""> None </option>
@@ -73,7 +73,7 @@
                                     </div> <!-- attribute value  -->
 									
 									<div class="form-group row mt-2">
-                                        <label for="name" class="col-sm-3 col-form-label">No. of days <span class='text-danger text-sm'>*</span></label>
+                                        <label for="name" class="col-sm-3 col-form-label">No. of days</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="no_of_days" placeholder="Name" name="no_of_days" value="<?= @$fetched_data[0]['no_of_days'] ?>">
 											<span class="text-danger"><?php echo form_error('no_of_days'); ?></span>
@@ -87,7 +87,7 @@
                                         </div>
                                     </div>-->
 									
-									<div class="form-group" ?>
+									<div class="form-group">
                                     <label for="image">Main Image <span class='text-danger text-sm'>*</span><small> (Recommended Size : 131 x 131 pixels)</small></label>
                                     <div class="col-sm-10">
                                         <div class='col-md-3'><a class="uploadFile img btn btn-primary text-white btn-sm mt-2 mb-2" data-input='cropstep_input_image' data-isremovable='0' data-is-multiple-uploads-allowed='0' data-toggle="modal" data-target="#media-upload-modal" value="Upload Photo"><i class='fa fa-upload'></i> Upload</a></div>
@@ -109,10 +109,115 @@
                                         <?php } ?>
                                     </div>
                                 </div>
-									
-                                    
-                                    <br>
+								<br>
+								
+								<span id="show_add_more" style="display:none">
+									<div id="more_fields">
 
+										<div class="form-group row field_block align-items-end">
+											<div class="col-sm-5">
+												<label>Description</label>
+												<textarea name="description[]" class="form-control"></textarea>
+											</div>
+
+											<div class="col-sm-4">
+												<label>Image</label>
+												<input type="file" class="form-control" name="images[]">
+											</div>
+											
+											<!--<div class="col-sm-4">
+
+												
+												<label style="display:block;margin-bottom:5px;">
+													<small>(Size : 131 x 131 pixels)</small>
+												</label>
+
+												<div style="display:flex;align-items:center;gap:10px;">
+
+													
+													<a class="uploadFile img btn btn-primary text-white btn-sm"
+													   data-input='images[]'
+													   data-isremovable='0'
+													   data-is-multiple-uploads-allowed='0'
+													   data-toggle="modal"
+													   data-target="#media-upload-modal">
+													   <i class='fa fa-upload'></i> Upload
+													</a>
+
+													
+													<div class="image-upload-section" style="display:flex;align-items:center;">
+														<div class="preview-image shadow rounded text-center d-none"
+															 style="width:50px;height:50px;overflow:hidden;border-radius:5px;">
+														</div>
+													</div>
+
+												</div>
+
+											</div>-->
+											
+											
+											<div class="col-sm-2">
+												<label>&nbsp;</label>
+												<button type="button" id="add_more_cropstep" class="btn btn-success form-control">+</button>
+											</div>
+										</div>
+
+									</div>
+									<!--<br>
+									<button type="button" id="add_more_cropstep" class="btn btn-primary">+</button>-->
+								</span>
+								
+								<span id="show_single_lable" style="display:none">
+									<div id="more_fields">
+
+										<div class="form-group row field_block align-items-end">
+											<div class="col-sm-5">
+												<label>Description</label>
+												<textarea name="description[]" class="form-control"></textarea>
+											</div>
+
+											<div class="col-sm-5">
+												<label>Image</label>
+												<input type="file" class="form-control" name="images[]">
+											</div>
+										</div>
+
+									</div>
+									<br>
+								</span>
+								
+								<span id="show_multiple_lable" style="display:none">
+									<div id="more_fields">
+
+										<div class="form-group row field_block align-items-end">
+											<div class="col-sm-5">
+												<label>Description</label>
+												<textarea name="description[]" class="form-control"></textarea>
+											</div>
+
+											<div class="col-sm-5">
+												<label>Image</label>
+												<input type="file" class="form-control" name="images[]">
+											</div>
+											
+											<div class="col-sm-5">
+												<label>Preventive</label>
+												<textarea name="preventive[]" class="form-control"></textarea>
+											</div>
+											
+											<div class="col-sm-5">
+												<label>Control</label>
+												<textarea name="control[]" class="form-control"></textarea>
+											</div>
+										</div>
+
+									</div>
+									<br>
+								</span>
+								
+								
+								
+								<br>
                                     <div class="form-group">
                                         <button type="reset" class="btn btn-warning">Reset</button>
                                         <button type="submit" class="btn btn-success update_attri" id="submit_btn"><?= (isset($fetched_data[0]['id'])) ? 'Update Cropstep' : 'Add Cropstep' ?></button>
@@ -123,13 +228,13 @@
                     </div> <!--/.card-->
                 </div>
 				
-				<div class="col-md-7">
+				<div class="col-md-12">
                     <div class="card content-area p-4">
                         <div class="card-header border-0">
                         </div>
                         <div class="card-innr">
                             <div class="card-head">
-                                <h4 class="card-title">Attributes</h4>
+                                <h4 class="card-title">Cropsteps</h4>
                             </div>
                             <div class="gaps-1-5x"></div>
                             <table class='table-striped' id='category_table' data-toggle="table" data-url="<?= base_url('admin/crops_step/cropstep_list') ?>" data-click-to-select="true" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-search="true" data-show-columns="true" data-show-refresh="true" data-trim-on-search="false" data-sort-name="id" data-sort-order="desc" data-mobile-responsive="true" data-toolbar="" data-show-export="true" data-maintain-selected="true" data-export-types='["txt","excel","csv"]' data-export-options='{

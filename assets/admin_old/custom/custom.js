@@ -10960,6 +10960,65 @@ $(document).on('click', '.delete-cropstep', function () {
     })
 });
 
+/*$(document).on("click", "#add_more_cropstep", function () {
+//alert('ok');
+    var html = `
+    <div class="form-group field_block" style="margin-top:15px;">
+        <div class="col-sm-5">
+            <label>Description</label>
+            <textarea name="description[]" class="form-control"></textarea>
+        </div>
+
+        <div class="col-sm-5 mt-2">
+            <label>Image</label>
+            <input type="file" class="form-control" name="images[]">
+        </div>
+
+        <div class="col-sm-2 mt-4">
+            <button type="button" class="btn btn-danger remove_row">Remove</button>
+        </div>
+    </div>
+    `;
+
+    $("#more_fields").append(html);
+
+});*/
+
+$(document).on("click", "#add_more_cropstep", function () {
+
+    var html = `
+    <div class="form-group row field_block align-items-end">
+
+        <div class="col-sm-5">
+            <label>Description</label>
+            <textarea name="description[]" class="form-control"></textarea>
+        </div>
+
+         <div class="col-sm-4">
+            <label>Image</label>
+            <input type="file" class="form-control" name="images[]">
+        </div>
+		
+		
+		
+        <div class="col-sm-2">
+            <label>&nbsp;</label>
+            <button type="button" class="btn btn-danger remove_row form-control">-</button>
+        </div>
+
+    </div>
+    `;
+
+    $("#more_fields").append(html);
+});
+
+
+$(document).on("click", ".remove_row", function () {
+    $(this).closest(".field_block").remove();
+});
+
+
+
 $(document).ready(function () {
     $('#base_price').on('input', function () {
         var value = $(this).val();
@@ -11012,3 +11071,31 @@ $(document).ready(function () {
         }, 10);
     });
 });
+
+function select_service(val)
+{
+	//alert(val);
+	if(val == 2)
+	{
+		$('#show_single_lable').show();
+		$('#show_multiple_lable').hide();
+		$('#show_add_more').hide();
+	}
+	else if(val == 6)
+	{
+		$('#show_single_lable').hide();
+		$('#show_multiple_lable').show();
+		$('#show_add_more').hide();
+	}
+	else if(val == 1 || val == 5)
+	{
+		$('#show_single_lable').hide();
+		$('#show_multiple_lable').hide();
+		$('#show_add_more').show();
+	}
+	else{
+		$('#show_single_lable').hide();
+		$('#show_multiple_lable').hide();
+		$('#show_add_more').hide();
+	}
+}
