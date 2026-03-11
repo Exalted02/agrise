@@ -34,6 +34,10 @@ class Crops_step extends CI_Controller
 			
 			if (isset($_GET['edit_id']) && !empty($_GET['edit_id'])) {
                 $this->data['fetched_data'] = fetch_details(TBL_CROP_STEPS, ['id' => $_GET['edit_id']]);
+				
+				$this->data['fetched_data_details'] = fetch_details(TBL_CROP_STEPS_DETAILS, ['crop_step_id' => $_GET['edit_id']]);
+				$aa = fetch_details(TBL_CROP_STEPS_DETAILS, ['crop_step_id' => $_GET['edit_id']]);
+				//echo "<pre>"; print_r($aa);die;
             }
 
             $this->load->view('admin/template', $this->data);
@@ -122,7 +126,7 @@ class Crops_step extends CI_Controller
 	public function add_crops()
 	{
 		//echo "<pre>";print_r($_FILES);
-		//echo "<pre>";print_r($_POST);die;
+		//echo "<pre>";print_r($description);die;
 		 if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {
             $edit_cropstep = $this->input->post('edit_cropstep', true);
             if (null !== $edit_cropstep) {
@@ -303,5 +307,23 @@ class Crops_step extends CI_Controller
             redirect('admin/login', 'refresh');
         }
     }
+	
+	public function delete_cropstep_details_data()
+	{
+		$id = $this->input->post('id');
+		$delete_status = $this->crops_model->delete_cropstep_details($id);
+		
+		$detailsData  = fetch_details(TBL_CROP_STEPS_DETAILS, ['id' => $id]);
+		$image_name = $detailsData[0]['image'];
+		//$path = FCPATH . 'uploads/cropstep/' . $image_name;
+		
+		$path =  base_url('uploads/cropstep/' .  $image_name);
+		
+		if(file_exists($path)){
+			unlink($path);
+		}
+		
+		return true;
+	}
 	
 }

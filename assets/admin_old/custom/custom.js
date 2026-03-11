@@ -10985,21 +10985,22 @@ $(document).on('click', '.delete-cropstep', function () {
 });*/
 
 $(document).on("click", "#add_more_cropstep", function () {
-
     var html = `
     <div class="form-group row field_block align-items-end">
 
         <div class="col-sm-5">
             <label>Description</label>
-            <textarea name="description[]" class="form-control"></textarea>
+            <textarea name="description[]" class="textarea addr_editor"></textarea>
         </div>
 
-         <div class="col-sm-4">
+         <div class="col-sm-3">
             <label>Image</label>
             <input type="file" class="form-control" name="images[]">
         </div>
 		
-		
+		<div class="col-sm-2">
+												
+		</div>
 		
         <div class="col-sm-2">
             <label>&nbsp;</label>
@@ -11010,6 +11011,12 @@ $(document).on("click", "#add_more_cropstep", function () {
     `;
 
     $("#more_fields").append(html);
+	//$('.textarea').wysihtml5();
+	//$('.addr_editor').summernote({ height:150 });
+	$('.addr_editor').summernote({
+		height:150
+	});
+	
 });
 
 
@@ -11017,7 +11024,52 @@ $(document).on("click", ".remove_row", function () {
     $(this).closest(".field_block").remove();
 });
 
+$(document).on("click", ".editable_remove_row", function () {
+	let id = $(this).data('id');
+	//alert(id);
+   
+	$(this).closest(".field_block_edit").hide();
+	var url = base_url + 'admin/Crops_step/delete_cropstep_details_data';
+	
+	$.ajax({
+        url: url,
+        type: 'POST',
+        data: {id:id},
+        dataType: 'json',
+        success: function (response) {
+             //alert(response);
+        },
+        error: function (xhr, status, error) {
+            /*$('#inventory_pie_chart').html('<div class="text-center p-4"><p>Error loading chart data</p></div>');
+            $('#inventory_units_chart').html('<div class="text-center p-4"><p>Error loading chart data</p></div>');*/
+        }
+    });
+	
+	
+});
 
+$(document).on("change", ".image_input_show", function () {
+
+    var input = this;
+
+    if (input.files && input.files[0]) {
+
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            $(input)
+                .closest('.field_block_edit')
+				.next('.col-sm-3')
+                .find('.preview_img_show')
+                .attr('src', e.target.result);
+
+        };
+		//alert(input.files[0]);
+        reader.readAsDataURL(input.files[0]);
+    }
+
+});
 
 $(document).ready(function () {
     $('#base_price').on('input', function () {
@@ -11074,28 +11126,56 @@ $(document).ready(function () {
 
 function select_service(val)
 {
+	
+	if(val == 1 || val == 5)
+	{
+		$('#show_add_more').show();
+		$('#show_add_button').show();
+		$('#preventive_control').hide();
+	}
+	else if(val == 2)
+	{
+		$('#show_add_more').show();
+		$('#show_add_button').hide();
+		$('#preventive_control').hide();
+	}
+	else if(val == 6)
+	{
+		$('#show_add_more').show();
+		$('#show_add_button').hide();
+		$('#preventive_control').show();
+	}
+	else{
+		$('#show_add_more').hide();
+	}
+	
+	
 	//alert(val);
-	if(val == 2)
+	/*if(val == 2)
 	{
 		$('#show_single_lable').show();
 		$('#show_multiple_lable').hide();
 		$('#show_add_more').hide();
+		$('#show_add_more_edit').hide();
 	}
 	else if(val == 6)
 	{
 		$('#show_single_lable').hide();
 		$('#show_multiple_lable').show();
 		$('#show_add_more').hide();
+		$('#show_add_more_edit').hide();
 	}
 	else if(val == 1 || val == 5)
 	{
 		$('#show_single_lable').hide();
 		$('#show_multiple_lable').hide();
 		$('#show_add_more').show();
+		$('#show_add_more_edit').show();
 	}
 	else{
 		$('#show_single_lable').hide();
 		$('#show_multiple_lable').hide();
 		$('#show_add_more').hide();
-	}
+		$('#show_add_more_edit').hide();
+	}*/
 }

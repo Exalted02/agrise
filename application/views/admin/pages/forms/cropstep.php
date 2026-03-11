@@ -110,111 +110,79 @@
                                     </div>
                                 </div>
 								<br>
-								
-								<span id="show_add_more" style="display:none">
+								<span id="show_add_more" style="<?php echo isset($fetched_data[0]['service_id']) && ($fetched_data[0]['service_id'] == 1 || $fetched_data[0]['service_id'] == 5  || $fetched_data[0]['service_id'] == 2  || $fetched_data[0]['service_id'] == 6) ? 'display:block' : 'display:none' ?>">
 									<div id="more_fields">
 
 										<div class="form-group row field_block align-items-end">
-											<div class="col-sm-5">
+											<div class="col-sm-10">
 												<label>Description</label>
-												<textarea name="description[]" class="form-control"></textarea>
+												<textarea name="description[]" class="textarea addr_editor"><?php echo isset($fetched_data_details[0]['step_details']) ? $fetched_data_details[0]['step_details'] : '';?></textarea>
 											</div>
 
-											<div class="col-sm-4">
+											<div class="col-sm-3">
 												<label>Image</label>
-												<input type="file" class="form-control" name="images[]">
+												<input type="file" class="form-control image_input_show" name="images[]">
 											</div>
-											
-											<!--<div class="col-sm-4">
-
-												
-												<label style="display:block;margin-bottom:5px;">
-													<small>(Size : 131 x 131 pixels)</small>
-												</label>
-
-												<div style="display:flex;align-items:center;gap:10px;">
-
-													
-													<a class="uploadFile img btn btn-primary text-white btn-sm"
-													   data-input='images[]'
-													   data-isremovable='0'
-													   data-is-multiple-uploads-allowed='0'
-													   data-toggle="modal"
-													   data-target="#media-upload-modal">
-													   <i class='fa fa-upload'></i> Upload
-													</a>
-
-													
-													<div class="image-upload-section" style="display:flex;align-items:center;">
-														<div class="preview-image shadow rounded text-center d-none"
-															 style="width:50px;height:50px;overflow:hidden;border-radius:5px;">
-														</div>
-													</div>
-
-												</div>
-
-											</div>-->
-											
 											
 											<div class="col-sm-2">
+												<img class="preview_img_show" src="" height="50" width="50">
+											</div>
+											
+											<span id="preventive_control">
+											<div class="col-sm-10">
+												<label>Preventive</label>
+												<textarea name="preventive[]" class="textarea addr_editor"><?php echo isset($fetched_data_details[0]['preventive_measures_details']) ? $fetched_data_details[0]['preventive_measures_details'] : '';?></textarea>
+											</div>
+											
+											<div class="col-sm-10">
+												<label>Control</label>
+												<textarea name="control[]" class="textarea addr_editor"><?php echo isset($fetched_data_details[0]['control_measures_details']) ? $fetched_data_details[0]['control_measures_details'] : '';?></textarea>
+											</div>
+											</span>
+											
+											<div class="col-sm-2" id="show_add_button" style="display:none">
 												<label>&nbsp;</label>
 												<button type="button" id="add_more_cropstep" class="btn btn-success form-control">+</button>
 											</div>
 										</div>
 
 									</div>
-									<!--<br>
-									<button type="button" id="add_more_cropstep" class="btn btn-primary">+</button>-->
+								
 								</span>
 								
-								<span id="show_single_lable" style="display:none">
-									<div id="more_fields">
-
-										<div class="form-group row field_block align-items-end">
-											<div class="col-sm-5">
-												<label>Description</label>
-												<textarea name="description[]" class="form-control"></textarea>
-											</div>
-
-											<div class="col-sm-5">
-												<label>Image</label>
-												<input type="file" class="form-control" name="images[]">
-											</div>
+								
+								
+								<!--<span id="show_add_more_edit">
+								<?php 
+								if(isset($fetched_data[0]['service_id']) && ($fetched_data[0]['service_id'] == 1 || $fetched_data[0]['service_id'] == 5))
+								{
+									foreach($fetched_data_details as $k=>$val)
+									{
+								?>
+									<div class="form-group row field_block_edit align-items-end">
+										<div class="col-sm-5">
+											<label>Description</label>
+											<textarea name="description[]" class="form-control"><?php echo $val['step_details']; ?></textarea>
 										</div>
 
-									</div>
-									<br>
-								</span>
-								
-								<span id="show_multiple_lable" style="display:none">
-									<div id="more_fields">
-
-										<div class="form-group row field_block align-items-end">
-											<div class="col-sm-5">
-												<label>Description</label>
-												<textarea name="description[]" class="form-control"></textarea>
-											</div>
-
-											<div class="col-sm-5">
-												<label>Image</label>
-												<input type="file" class="form-control" name="images[]">
-											</div>
-											
-											<div class="col-sm-5">
-												<label>Preventive</label>
-												<textarea name="preventive[]" class="form-control"></textarea>
-											</div>
-											
-											<div class="col-sm-5">
-												<label>Control</label>
-												<textarea name="control[]" class="form-control"></textarea>
-											</div>
+										<div class="col-sm-3">
+											<label>Image</label>
+											<input type="file" class="form-control image_input" name="images[]">
 										</div>
-
+										<div class="col-sm-2">
+											<img class="preview_img" src="<?php echo base_url() . '/uploads/cropstep/'. $val['image']; ?>" height="50" width="50">
+										</div>
+										<input type="hidden" name="cropstep_dtls_id[]" value="<?php echo $val['id'] ;?>">
+										<div class="col-sm-2">
+											<label>&nbsp;</label>
+											<button type="button" class="btn btn-danger editable_remove_row form-control" data-id="<?php echo $val['id'] ;?>">-</button>
+										</div>
 									</div>
-									<br>
-								</span>
-								
+								<?php
+									}
+								}
+								?>
+								</span>-->
 								
 								
 								<br>
