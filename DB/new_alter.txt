@@ -29,6 +29,7 @@ CREATE TABLE `2026_dbt_service` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
+ALTER TABLE `2026_crop_step_details` ADD `short_title` VARCHAR(255) NOT NULL AFTER `image`;
 
 ---New Table---
 
