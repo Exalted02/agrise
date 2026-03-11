@@ -170,6 +170,7 @@ Defined Methods:-
         "app/v1/api/get_product_faqs",
         "app/v1/api/get_crop",
         "app/v1/api/get_crop_steps",
+        "app/v1/api/get_services_dbt",
         "app/v1/api/get_services",
         "app/v1/api/thirdparty_apikey",
         "app/v1/api/current_soil_report",
@@ -7337,7 +7338,7 @@ Defined Methods:-
     }*/
     public function get_crop()
 	{
-		$select = $this->db->query("SELECT * FROM 2026_crop_master WHERE crop_status=1 ORDER BY sort_order ASC");
+		$select = $this->db->query("SELECT * FROM ".TBL_CROP_MASTER." WHERE crop_status=1 ORDER BY sort_order ASC");
 		$rows = $select->result_array();
 
 		$data = [];
@@ -7386,14 +7387,22 @@ Defined Methods:-
 
 		$days_passed = $start->diff($end)->days;
 
-		$query = $this->db->query("
+		/*$query = $this->db->query("
 			SELECT * 
-			FROM 2026_crop_steps 
+			FROM ".TBL_CROP_STEPS." 
 			WHERE service_id = '$service_id' 
 			AND crop_id = '$crop_id'
 			ORDER BY no_of_days ASC
-		");
-
+		");*/
+		$this->db->from(TBL_CROP_STEPS);
+		if (!empty($service_id)) {
+			$this->db->where('service_id', $service_id);
+		}
+		if (!empty($crop_id)) {
+			$this->db->where('crop_id', $crop_id);
+		}
+		$this->db->order_by('no_of_days', 'ASC');
+		$query = $this->db->get();
 		$steps = $query->result_array();
 
 		$data = [];
@@ -7417,9 +7426,9 @@ Defined Methods:-
 
 			// get step details
 			if ($service_id == 6) {
-				$select_fields = "SELECT image, step_details, preventive_measures_details, control_measures_details";
+				$select_fields = "SELECT id, image, step_details, preventive_measures_details, control_measures_details";
 			} else {
-				$select_fields = "SELECT image, step_details";
+				$select_fields = "SELECT id, image, step_details";
 			}
 
 			$details = $this->db->query($select_fields . " 
@@ -7444,6 +7453,55 @@ Defined Methods:-
 
 		echo json_encode($response);
 	}
+	public function get_services_dbt()
+	{
+		$parent_id    = $this->input->post('parent_id');
+		if ($parent_id === null) {
+			$parent_id = 0;
+		}
+
+		// fetch all rows
+		$query = $this->db->select('id,parent_id,title,image')
+						  ->from('2026_dbt_service')
+						  ->where('parent_id', $parent_id)
+						  ->order_by('id','ASC')
+						  ->get();
+
+		$rows = $query->result_array();
+
+		// build tree
+		// $tree = $this->buildDBTTree($rows);
+
+		$response = [
+			'error' => false,
+			'message' => 'Success',
+			'data' => $rows
+		];
+
+		echo json_encode($response);
+	}
+	/*private function buildDBTTree($elements, $parent_id = 0)
+	{
+		$branch = [];
+
+		foreach ($elements as $element) {
+
+			if ($element['parent_id'] == $parent_id) {
+
+				$children = $this->buildDBTTree($elements, $element['id']);
+
+				if ($children) {
+					$element['children'] = $children;
+				} else {
+					$element['children'] = [];
+				}
+
+				$branch[] = $element;
+			}
+		}
+
+		return $branch;
+	}*/
   
   public function get_services()
     {
