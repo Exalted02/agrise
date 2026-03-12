@@ -167,11 +167,11 @@
 
 											<div class="col-sm-3">
 												<label>Image</label>
-												<input type="file" class="form-control image_input_show_s" name="edit_images[]">
+												<input type="file" class="form-control image_input_edit_show" name="edit_images[]">
 											</div>
 											
 											<div class="col-sm-2">
-												<img class="preview_img_show_s" src="<?php echo base_url() . '/uploads/cropstep/'. $val['image']; ?>" height="50" width="50">
+												<img class="preview_img_edit_show" src="<?php echo base_url() . '/uploads/cropstep/'. $val['image']; ?>" height="50" width="50">
 											</div>
 											
 											<span style="<?php echo isset($fetched_data[0]['service_id']) && $fetched_data[0]['service_id'] == 6 ? 'display:block': 'display:none'; ?>">

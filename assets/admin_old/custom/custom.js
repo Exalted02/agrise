@@ -11060,12 +11060,33 @@ $(document).on("change", ".image_input_show", function () {
 
             $(input)
                 .closest('.field_block')
-				.next('.col-sm-2')
                 .find('.preview_img_show')
                 .attr('src', e.target.result);
 
         };
-		alert(input.files[0]);
+		//alert(input.files[0]);
+        reader.readAsDataURL(input.files[0]);
+    }
+
+});
+
+$(document).on("change", ".image_input_edit_show", function () {
+
+    var input = this;
+
+    if (input.files && input.files[0]) {
+
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            $(input)
+                .closest('.field_block_edit')
+                .find('.preview_img_edit_show')
+                .attr('src', e.target.result);
+
+        };
+		//alert(input.files[0]);
         reader.readAsDataURL(input.files[0]);
     }
 

@@ -2262,6 +2262,7 @@ Defined Methods:-
                     $tempRow['latitude'] = (isset($row['latitude']) && !empty($row['latitude'])) ? $row['latitude  '] : '';
                     $tempRow['longitude'] = (isset($row['longitude']) && !empty($row['longitude'])) ? $row['longitude  '] : '';
                     $tempRow['created_at'] = (isset($row['created_at']) && !empty($row['created_at'])) ? $row['created_at'] : '';
+                    $tempRow['user_type'] = (isset($row['user_type']) && !empty($row['user_type'])) ? $row['user_type'] : '';
 
                     $rows[] = $tempRow;
                 }
@@ -2580,7 +2581,7 @@ Defined Methods:-
             }
 
             update_details(['active' => 1], [$identity_column => $identity], 'users');
-            $data = $this->db->select('u.id,u.username,u.email,u.mobile,c.name as city_name,a.name as area_name')->where([$identity_column => $identity])->join('cities c', 'c.id=u.city', 'left')->join('areas a', 'a.city_id=c.id', 'left')->group_by('email')->get('users u')->result_array();
+            $data = $this->db->select('u.id,u.username,u.email,u.mobile,c.name as city_name,a.name as area_name, u.user_type')->where([$identity_column => $identity])->join('cities c', 'c.id=u.city', 'left')->join('areas a', 'a.city_id=c.id', 'left')->group_by('email')->get('users u')->result_array();
 
             foreach ($data as $row) {
                 $row = output_escaping($row);
@@ -2590,6 +2591,7 @@ Defined Methods:-
                 $tempRow['mobile'] = (isset($row['mobile']) && !empty($row['mobile'])) ? $row['mobile'] : '';
                 $tempRow['city_name'] = (isset($row['city_name']) && !empty($row['city_name'])) ? $row['city_name'] : '';
                 $tempRow['area_name'] = (isset($row['area_name']) && !empty($row['area_name'])) ? $row['area_name'] : '';
+                $tempRow['user_type'] = (isset($row['user_type']) && !empty($row['user_type'])) ? $row['user_type'] : '';
 
                 $rows[] = $tempRow;
             }
