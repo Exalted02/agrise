@@ -201,13 +201,14 @@ class Crops_model extends CI_Model
         $data = escape_array($data);
 		
 		//echo "<pre>";print_r($files);
+		//echo "<pre>";print_r($data);
 		//echo "<pre>";print_r($data['description']);die;
 		$cropstep_data = [
             'service_id' => $data['service_id'],
             'crop_id' => $data['crop_id'],
             'steps_title' => $data['steps_title'],
             'no_of_days' => $data['no_of_days'],
-            'steps_image' => $data['cropstep_input_image']
+            'steps_image' => isset($data['cropstep_input_image']) ? $data['cropstep_input_image'] :''
         ];
 		
         

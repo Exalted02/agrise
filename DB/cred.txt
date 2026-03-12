@@ -4,6 +4,8 @@ URL - https://agri.seleconit.com:2083/
 USER - agrise
 PW - 2n96hjq06Ngg
 --------------------------------------
+website url:- https://krushitirth.com/admin/login
+
 CPANEL - krushitirth
 URL - krushitirth.com:2083
 USER - krushiti

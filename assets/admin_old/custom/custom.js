@@ -10988,18 +10988,18 @@ $(document).on("click", "#add_more_cropstep", function () {
     var html = `
     <div class="form-group row field_block align-items-end">
 
-        <div class="col-sm-5">
+        <div class="col-sm-10">
             <label>Description</label>
-            <textarea name="description[]" class="textarea addr_editor"></textarea>
+            <textarea name="description[]" class="textarea addr_editor  form-control"></textarea>
         </div>
 
          <div class="col-sm-3">
             <label>Image</label>
-            <input type="file" class="form-control" name="images[]">
+            <input type="file" class="form-control image_input_show" name="images[]">
         </div>
 		
-		<div class="col-sm-2">
-												
+		<div class="col-sm-2 display-image"  style="display:none">
+			<img class="preview_img_show" src="" height="50" width="50">							
 		</div>
 		
         <div class="col-sm-2">
@@ -11011,10 +11011,10 @@ $(document).on("click", "#add_more_cropstep", function () {
     `;
 
     $("#more_fields").append(html);
-	//$('.textarea').wysihtml5();
-	//$('.addr_editor').summernote({ height:150 });
-	$('.addr_editor').summernote({
-		height:150
+	
+	
+	$("#more_fields .field_block:last .addr_editor").summernote({
+		height:120
 	});
 	
 });
@@ -11049,7 +11049,7 @@ $(document).on("click", ".editable_remove_row", function () {
 });
 
 $(document).on("change", ".image_input_show", function () {
-
+	
     var input = this;
 
     if (input.files && input.files[0]) {
@@ -11058,10 +11058,17 @@ $(document).on("change", ".image_input_show", function () {
 
         reader.onload = function (e) {
 
-            $(input)
+            /*$(input)
                 .closest('.field_block')
                 .find('.preview_img_show')
-                .attr('src', e.target.result);
+                .attr('src', e.target.result);*/
+			
+			var parent = $(input).closest('.field_block');
+
+            parent.find('.preview_img_show').attr('src', e.target.result);
+
+            parent.find('.display-image').show();
+				
 
         };
 		//alert(input.files[0]);

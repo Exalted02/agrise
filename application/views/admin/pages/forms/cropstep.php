@@ -33,7 +33,7 @@
                                             <select class="form-control" id="service_id" name="service_id" onchange="select_service(this.value);">
                                                 <option value=""> None </option>
                                                 <?php foreach ($services_master as $row) { ?>
-                                                    <option value="<?= $row['id'] ?>" <?php echo  isset($fetched_data[0]['service_id']) && $fetched_data[0]['service_id'] == $row['id'] ? 'selected' : ''; ?>> <?= $row['service_title']; ?> </option>
+                                                    <option value="<?= $row['id'] ?>" <?php echo  isset($fetched_data[0]['service_id']) && $fetched_data[0]['service_id'] == $row['id'] ? 'selected' : ''; ?> <?php echo  isset($fetched_data[0]['service_id']) && ($fetched_data[0]['service_id'] == 1 || $fetched_data[0]['service_id'] == 5) ? 'readonly' : ''; ?>> <?= $row['service_title']; ?> </option>
                                                 <?php } ?>
                                             </select>
 											<span class="text-danger"><?php echo form_error('service_id'); ?></span>
@@ -116,7 +116,7 @@
 										<div class="form-group row field_block align-items-end">
 											<div class="col-sm-10">
 												<label>Descriptions</label>
-												<textarea name="description[]" class="textarea addr_editor"></textarea>
+												<textarea name="description[]" class="textarea addr_editor form-control"></textarea>
 											</div>
 
 											<div class="col-sm-3">
@@ -124,7 +124,7 @@
 												<input type="file" class="form-control image_input_show" name="images[]">
 											</div>
 											
-											<div class="col-sm-2">
+											<div class="col-sm-2 display-image" style="display:none">
 												<img class="preview_img_show" src="" height="50" width="50">
 											</div>
 											
@@ -384,3 +384,20 @@
     </div>
 
 <?php } ?>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote.min.js"></script>
+<script>
+$(document).ready(function(){
+	//$('.textarea .addr_editor').wysihtml5();
+	/*$('.addr_editor').summernote({
+		height:150
+	});*/
+	//$('.textarea').wysihtml5();
+	
+	/*$('.addr_editor').summernote({
+		height:150
+	});*/
+	
+});
+</script>
