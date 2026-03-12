@@ -171,7 +171,6 @@ Defined Methods:-
         "app/v1/api/get_crop",
         "app/v1/api/get_crop_steps",
         "app/v1/api/get_services_dbt",
-        // "app/v1/api/get_fertilizer_calculation",
         "app/v1/api/get_services",
         "app/v1/api/thirdparty_apikey",
         "app/v1/api/current_soil_report",
@@ -2562,6 +2561,7 @@ Defined Methods:-
                 'longitude' => $this->input->post('longitude') ?: NULL,
                 'active' => 1,
                 'type' => $user_type,
+                'user_type' => $this->input->post('user_type') ?: 0,
             ];
 
             $res = $this->ion_auth->register($identity, $password, $email, $additional_data, ['2']);
@@ -7481,30 +7481,6 @@ Defined Methods:-
 
 		echo json_encode($response);
 	}
-	/*public function get_fertilizer_calculation()
-	{
-		$select = $this->db->query("SELECT
-									c.crop_title,
-									fo.option_name,
-									fm.fertilizer_name,
-									fm.nitrogen,
-									fm.phosphorus,
-									fm.potassium
-									FROM 2026_fertilizer_option fo
-									JOIN 2026_crop_master c ON c.id = fo.crop_id
-									JOIN 2026_fertilizer_option_items fi ON fi.option_id = fo.id
-									JOIN 2026_fertilizer_master fm ON fm.id = fi.fertilizer_id
-									WHERE fo.crop_id = 7;");
-		$rows = $select->result_array();
-
-		$response = [
-			'error' => false,
-			'message' => 'Success',
-			'data' => $rows
-		];
-
-		echo json_encode($response);
-	}*/
 	/*private function buildDBTTree($elements, $parent_id = 0)
 	{
 		$branch = [];
