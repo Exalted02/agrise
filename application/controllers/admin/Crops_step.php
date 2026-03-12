@@ -36,7 +36,7 @@ class Crops_step extends CI_Controller
                 $this->data['fetched_data'] = fetch_details(TBL_CROP_STEPS, ['id' => $_GET['edit_id']]);
 				
 				$this->data['fetched_data_details'] = fetch_details(TBL_CROP_STEPS_DETAILS, ['crop_step_id' => $_GET['edit_id']]);
-				$aa = fetch_details(TBL_CROP_STEPS_DETAILS, ['crop_step_id' => $_GET['edit_id']]);
+				//$aa = fetch_details(TBL_CROP_STEPS_DETAILS, ['crop_step_id' => $_GET['edit_id']]);
 				//echo "<pre>"; print_r($aa);die;
             }
 

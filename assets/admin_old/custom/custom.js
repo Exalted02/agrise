@@ -11059,13 +11059,13 @@ $(document).on("change", ".image_input_show", function () {
         reader.onload = function (e) {
 
             $(input)
-                .closest('.field_block_edit')
-				.next('.col-sm-3')
+                .closest('.field_block')
+				.next('.col-sm-2')
                 .find('.preview_img_show')
                 .attr('src', e.target.result);
 
         };
-		//alert(input.files[0]);
+		alert(input.files[0]);
         reader.readAsDataURL(input.files[0]);
     }
 
