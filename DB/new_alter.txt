@@ -31,6 +31,10 @@ CREATE TABLE `2026_dbt_service` (
 
 ALTER TABLE `2026_crop_step_details` ADD `short_title` VARCHAR(255) NOT NULL AFTER `image`;
 
+============== 12-03-2026=====
+
+ALTER TABLE `users` ADD `user_type` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '0=farmer ; 1=franchise' AFTER `type`;
+
 ---New Table---
 
 
@@ -60,4 +64,6 @@ post fields are - service_id,
 
 POST method - https://krushitirth.com/app/v1/api/get_services_dbt
 post fields are - parent_id
+
+
 

@@ -171,7 +171,6 @@ Defined Methods:-
         "app/v1/api/get_crop",
         "app/v1/api/get_crop_steps",
         "app/v1/api/get_services_dbt",
-        // "app/v1/api/get_fertilizer_calculation",
         "app/v1/api/get_services",
         "app/v1/api/thirdparty_apikey",
         "app/v1/api/current_soil_report",
@@ -2263,6 +2262,7 @@ Defined Methods:-
                     $tempRow['latitude'] = (isset($row['latitude']) && !empty($row['latitude'])) ? $row['latitude  '] : '';
                     $tempRow['longitude'] = (isset($row['longitude']) && !empty($row['longitude'])) ? $row['longitude  '] : '';
                     $tempRow['created_at'] = (isset($row['created_at']) && !empty($row['created_at'])) ? $row['created_at'] : '';
+                    $tempRow['user_type'] = (isset($row['user_type']) && !empty($row['user_type'])) ? $row['user_type'] : '';
 
                     $rows[] = $tempRow;
                 }
@@ -2562,6 +2562,7 @@ Defined Methods:-
                 'longitude' => $this->input->post('longitude') ?: NULL,
                 'active' => 1,
                 'type' => $user_type,
+                'user_type' => $this->input->post('user_type') ?: 0,
             ];
 
             $res = $this->ion_auth->register($identity, $password, $email, $additional_data, ['2']);
@@ -2580,7 +2581,7 @@ Defined Methods:-
             }
 
             update_details(['active' => 1], [$identity_column => $identity], 'users');
-            $data = $this->db->select('u.id,u.username,u.email,u.mobile,c.name as city_name,a.name as area_name')->where([$identity_column => $identity])->join('cities c', 'c.id=u.city', 'left')->join('areas a', 'a.city_id=c.id', 'left')->group_by('email')->get('users u')->result_array();
+            $data = $this->db->select('u.id,u.username,u.email,u.mobile,c.name as city_name,a.name as area_name, u.user_type')->where([$identity_column => $identity])->join('cities c', 'c.id=u.city', 'left')->join('areas a', 'a.city_id=c.id', 'left')->group_by('email')->get('users u')->result_array();
 
             foreach ($data as $row) {
                 $row = output_escaping($row);
@@ -2590,6 +2591,7 @@ Defined Methods:-
                 $tempRow['mobile'] = (isset($row['mobile']) && !empty($row['mobile'])) ? $row['mobile'] : '';
                 $tempRow['city_name'] = (isset($row['city_name']) && !empty($row['city_name'])) ? $row['city_name'] : '';
                 $tempRow['area_name'] = (isset($row['area_name']) && !empty($row['area_name'])) ? $row['area_name'] : '';
+                $tempRow['user_type'] = (isset($row['user_type']) && !empty($row['user_type'])) ? $row['user_type'] : '';
 
                 $rows[] = $tempRow;
             }
@@ -7481,30 +7483,6 @@ Defined Methods:-
 
 		echo json_encode($response);
 	}
-	/*public function get_fertilizer_calculation()
-	{
-		$select = $this->db->query("SELECT
-									c.crop_title,
-									fo.option_name,
-									fm.fertilizer_name,
-									fm.nitrogen,
-									fm.phosphorus,
-									fm.potassium
-									FROM 2026_fertilizer_option fo
-									JOIN 2026_crop_master c ON c.id = fo.crop_id
-									JOIN 2026_fertilizer_option_items fi ON fi.option_id = fo.id
-									JOIN 2026_fertilizer_master fm ON fm.id = fi.fertilizer_id
-									WHERE fo.crop_id = 7;");
-		$rows = $select->result_array();
-
-		$response = [
-			'error' => false,
-			'message' => 'Success',
-			'data' => $rows
-		];
-
-		echo json_encode($response);
-	}*/
 	/*private function buildDBTTree($elements, $parent_id = 0)
 	{
 		$branch = [];
