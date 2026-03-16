@@ -152,6 +152,7 @@ define('TBL_SERVICE_MASTER','2026_services');
 define('TBL_CROP_STEPS','2026_crop_steps');
 define('TBL_CROP_STEPS_DETAILS','2026_crop_step_details');
 define('TBL_DBT_SERVICE','2026_dbt_service');
+define('CROP_STEP_PRODUCTS','2026_crop_step_products');
 
 
 //custom array
