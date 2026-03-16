@@ -91,7 +91,18 @@ define('IS_ALLOWED_MODIFICATION', 1);
 define('CI_DEBUG',false);
 // define('ALLOW_MODIFICATION', 1);
 define('DEMO_VERSION_MSG', 'Modification in demo version is not allowed');
-define('APP_URL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . str_replace(basename($_SERVER['SCRIPT_NAME']), "", $_SERVER['SCRIPT_NAME']));
+
+//define('APP_URL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . str_replace(basename($_SERVER['SCRIPT_NAME']), "", $_SERVER['SCRIPT_NAME']));
+
+if (isset($_SERVER['HTTP_HOST'])) {
+    // Web request
+    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+    define('APP_URL', $protocol . "://" . $_SERVER['HTTP_HOST'] . str_replace(basename($_SERVER['SCRIPT_NAME']), "", $_SERVER['SCRIPT_NAME']));
+} else {
+    // CLI request (cron) fallback
+    define('APP_URL', "https://krushitirth.com/"); // Replace with your actual domain
+}
+
 define('TABLES', 'tables/');
 define('VIEW', 'view/');
 define('CHAT_MEDIA_PATH', 'uploads/chat_media/');

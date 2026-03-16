@@ -63,7 +63,8 @@ class MyConfig
         $t->load->library('session');
         if (!$t->ion_auth->logged_in()) {
             $currentURL = current_url();
-            $params = $_SERVER['QUERY_STRING'];
+            $params = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
+            //$params = $_SERVER['QUERY_STRING'];
             $fullURL = (!empty($params)) ? $currentURL . '?' . $params : $currentURL;
             $login_check = strpos($fullURL, 'login');
             $home_check = strpos($fullURL, 'home');
