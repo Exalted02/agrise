@@ -36,7 +36,6 @@ class Product extends CI_Controller
 
     public function create_product()
     {
-
         if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {
             $this->data['main_page'] = FORMS . 'product';
             $settings = get_settings('system_settings', true);
@@ -54,6 +53,16 @@ class Product extends CI_Controller
                 $this->data['meta_description'] = 'Update Product | ' . $settings['app_name'];
                 $product_details = fetch_details('products', ['id' => $_GET['edit_id']], '*');
                 $countries = fetch_details('countries', ['name' => $product_details[0]['made_in']], 'name');
+				
+				
+				 $product_crop_step = fetch_details(CROP_STEP_PRODUCTS, ['product_id' => $_GET['edit_id']], '*');
+				 //echo "<pre>";print_r($product_crop_step);die;
+				 $this->data['product_crop_step'] = $product_crop_step;
+				 
+				 $this->data['crop_step_data'] = fetch_details(TBL_CROP_STEPS);
+				 //$aa = fetch_details(TBL_CROP_STEPS);
+				 //echo "<pre>";print_r($aa);die;
+				
                 if (!empty($product_details)) {
                     $this->data['product_details'] = $product_details;
                     $this->data['product_variants'] = get_variants_values_by_pid($_GET['edit_id']);
@@ -100,6 +109,11 @@ class Product extends CI_Controller
             }
             $this->data['categories'] = $this->category_model->get_categories();
             $this->data['attributes_refind'] = $attributes_refind;
+			
+			$this->data['services_master'] = fetch_details(TBL_SERVICE_MASTER);
+			$this->data['crop_master'] = fetch_details(TBL_CROP_MASTER);
+			$this->data['user_case'] = USER_CASE;
+			
             $this->load->view('admin/template', $this->data);
         } else {
             redirect('admin/login', 'refresh');
@@ -2332,4 +2346,15 @@ class Product extends CI_Controller
             redirect('admin/login', 'refresh');
         }
     }
+	public function get_cropstep_data()
+	{
+		$crop_id = $this->input->post('id');
+		$crop_data = fetch_details(TBL_CROP_STEPS, ['crop_id' => $crop_id]);
+		$html = '<option value="">Select</option>';
+		//echo "<pre>";print_r($crop_data);die;
+		foreach($crop_data as $crop){
+			$html .= '<option value="'. $crop['id'] .'">'. $crop['steps_title'] .'</option>';
+		}
+		echo json_encode($html);
+	}
 }

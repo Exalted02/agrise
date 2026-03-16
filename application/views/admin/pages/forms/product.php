@@ -945,6 +945,142 @@
                                     </div>
                                 </div>
                             </div>
+							<div class="col-md-12">
+								<div class="row">
+									<div class="mt-4">
+										<div class="row">
+											<div class="col-md-12">
+												<div class="card card-body">
+													<b class="m-2">
+														Crops steps
+													</b>
+													<hr>
+													<div class="card-body">
+														<div id="more_fields">
+															<div class="row field_block  align-items-end">
+																<div class="form-group col-md-3">
+																	<label for="service_id" class="col-form-label">Services</label>
+																	<select class='form-control' name='service_id[]'>
+																		<option value="">Select</option>
+																		<?php foreach ($services_master as $row) { ?>
+																		<option value=" <?= $row['id']; ?>"> <?= $row['service_title']; ?> </option>
+																		<?php 
+																		}
+																		?>
+																	</select>
+																</div>
+															   
+																<div class="form-group col-md-2">
+																	<label for="crop_id" class="col-form-label ">Crops</label>
+																		<select class='form-control' name='crop_id[]' onchange="select_product_crop(this)">
+																			<option value="">Select</option>
+																			<?php foreach ($crop_master as $row) { ?>
+																			<option value="<?= $row['id'] ?>"> <?= $row['crop_title'] ?> </option>
+																		<?php } ?>
+																		</select>
+																</div>
+																<div class="form-group col-md-3">
+																	<label for="crop_id" class="col-form-label ">Crops step</label>
+																	<select class='form-control cropstep_id' name="cropstep_id[]" id="cropstep_id">
+																		<option value="">Select</option>
+																	
+																	</select>
+																</div>
+																<div class="form-group col-md-2">
+																		<label for="crop_id" class="col-form-label ">User case</label>
+																		<select class='form-control' name='product_crop_used_case[]'>
+																			<option value="">Select</option>
+																				<?php foreach ($user_case as $k=>$val) { ?>
+																			<option value="<?= $k ?>"> <?= $val; ?> </option>
+																		<?php } ?>
+																		</select>
+																</div>
+																<div class="col-sm-2 mt-2" id="show_add_button">
+																<label>&nbsp;</label>
+																	<button type="button" id="more_fields_product_crop_step" class="btn btn-success form-control">+</button>
+																</div>
+															</div>
+														</div>
+														<!---- edit crop steps -->
+														<?php 
+														if(!empty($product_crop_step))
+														{
+														?>
+														<div class="form-group row field_block_edit align-items-end">
+								
+															<?php 
+															foreach($product_crop_step as $cropsteps)
+															{
+															?>
+																<div class="form-group col-md-3">
+																	<label for="service_id" class="col-form-label">Services</label>
+																	<select class='form-control' name='edit_service_id[]'>
+																		<option value="">Select</option>
+																		<?php foreach ($services_master as $row) { ?>
+																		<option value=" <?= $row['id']; ?>" <?php echo $cropsteps['service_id'] == $row['id'] ? 'selected' : ''; ?>> <?= $row['service_title']; ?> </option>
+																		<?php 
+																		}
+																		?>
+																	</select>
+																</div>
+															   
+																<div class="form-group col-md-2">
+																	<label for="crop_id" class="col-form-label ">Crops</label>
+																		<select class='form-control' name='edit_crop_id[]' onchange="select_product_crop(this)">
+																			<option value="">Select</option>
+																			<?php foreach ($crop_master as $row) { ?>
+																			<option value="<?= $row['id'] ?>" <?php echo $cropsteps['crop_id'] == $row['id'] ? 'selected' : ''; ?>> <?= $row['crop_title'] ?> </option>
+																		<?php } ?>
+																		</select>
+																</div>
+																<div class="form-group col-md-3">
+																	<label for="crop_id" class="col-form-label ">Crops step</label>
+																	<select class='form-control cropstep_id' name="edit_cropstep_id[]" id="cropstep_id">
+																		<option value="">Select</option>
+																		<?php 
+																		foreach($crop_step_data as $data)
+																		{
+																		?>
+																			<option value="<?php echo  $data['id'] ;?>" <?php echo $cropsteps['crop_step_id'] == $data['id'] ? 'selected' : ''; ?>><?php echo  $data['steps_title'] ;?></option>
+																		<?php 
+																		}
+																		?>
+																	</select>
+																</div>
+																<div class="form-group col-md-2">
+																		<label for="crop_id" class="col-form-label ">User case</label>
+																		<select class='form-control' name='edit_product_crop_used_case[]'>
+																			<option value="">Select</option>
+																				<?php foreach ($user_case as $k=>$val) { ?>
+																			<option value="<?= $k ?>" <?php echo $cropsteps['used_case_id'] == $k ? 'selected' : ''; ?>> <?= $val; ?> </option>
+																		<?php } ?>
+																		</select>
+																</div>
+																<div class="col-sm-2 mt-2" id="show_add_button">
+																<label>&nbsp;</label>
+																	<button type="button" id="" class="btn btn-danger form-control">-</button>
+																</div>
+															<?php 
+															}
+															?>
+														</div>
+														<?php 
+														}
+														?>
+														<!---- end -->
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								
+								
+								
+								
+							</div>
+							
 
                             <div class="col-md-12  mt-4">
                                 <div class="row">
@@ -973,8 +1109,35 @@
                                     </div>
                                 </div>
                             </div>
+							
+							
+							
+							
                 </form>
             </div> <!--/.col-md-12-->
         </div> <!-- /.row -->
     </section>
 </div>
+<script>
+
+window.servicesOptions = `<option value="">Select</option>
+	<?php foreach ($services_master as $row) { ?>
+	<option value="<?= $row['id']; ?>"><?= $row['service_title']; ?></option>
+	<?php } ?>
+	`;
+	
+	
+window.cropOptions = `<option value="">Select</option>
+	<?php foreach ($crop_master as $row) { ?>
+	<option value="<?= $row['id']; ?>"><?= $row['crop_title']; ?></option>
+	<?php } ?>
+	`;
+
+
+window.usercaseOptions = `<option value="">Select</option>
+	<?php foreach ($user_case as $k=>$val) { ?>
+	<option value="<?= $k; ?>"><?= $val; ?></option>
+	<?php } ?>
+	`;
+	
+</script>

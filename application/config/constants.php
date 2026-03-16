@@ -176,3 +176,10 @@ define('CROP_CATEGORIES', [
     6 => 'Fruit',
     7 => 'Spices & Condiments',
 ]);
+
+//user case  array
+define('USER_CASE', [
+    1 => 'User case1',
+    2 => 'User case2',
+    3 => 'User case3',
+]);

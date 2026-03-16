@@ -35,6 +35,19 @@ ALTER TABLE `2026_crop_step_details` ADD `short_title` VARCHAR(255) NOT NULL AFT
 
 ALTER TABLE `users` ADD `user_type` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '0=farmer ; 1=franchise' AFTER `type`;
 
+================ 16-03-2026=============================
+CREATE TABLE `2026_crop_step_products` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) DEFAULT NULL,
+  `service_id` int(11) DEFAULT NULL,
+  `crop_id` int(11) DEFAULT NULL,
+  `crop_step_id` int(11) DEFAULT NULL,
+  `used_case_id` int(11) DEFAULT NULL,
+  `date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+
 ---New Table---
 
 
@@ -64,6 +77,7 @@ post fields are - service_id,
 
 POST method - https://krushitirth.com/app/v1/api/get_services_dbt
 post fields are - parent_id
+
 
 
 

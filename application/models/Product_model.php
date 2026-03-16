@@ -27,6 +27,7 @@ class Product_model extends CI_Model
     }
     public function add_product($data)
     {
+		//echo "<pre>";print_r($data);die;
         $data = escape_array($data);
         if ($data['product_type'] == 'simple_product' || $data['product_type'] == 'variable_product') {
             $pro_type = ($data['product_type'] == 'simple_product') ? 'simple_product' : 'variable_product';
@@ -313,6 +314,28 @@ class Product_model extends CI_Model
                 }
             }
         }
+		
+		if(isset($data['edit_product_id'])) {
+			 
+		}
+		else 
+		{
+			foreach($data['service_id'] as $key => $desc)
+			{
+				
+				$cropstep_details_data = [
+					'product_id' => $p_id,
+					'service_id' => $desc ?? '',
+					'crop_id' => $data['crop_id'][$key] ?? '',
+					'crop_step_id' => $data['cropstep_id'][$key] ?? '',
+					'used_case_id' => $data['product_crop_used_case'][$key] ?? '',
+					'date' => date('Y-m-d h:i:s')
+					
+				];
+				
+				$this->db->insert(CROP_STEP_PRODUCTS, $cropstep_details_data);
+			}
+		}
     }
 
     public function get_product_details($flag = NULL)

@@ -11152,6 +11152,78 @@ $(document).ready(function () {
     });
 });
 
+$(document).on("click", "#more_fields_product_crop_step", function () {
+	//alert('ok');
+    var html = `
+    <div class="form-group row field_block align-items-end">
+
+        <div class="form-group col-md-3">
+            <label for="service_id" class="col-form-label">Service</label>
+           <select class='form-control' name='service_id[]'>
+			 ${window.servicesOptions}
+			</select>
+        </div>
+		
+		<div class="form-group col-md-2">
+			<label for="crop_id" class="col-form-label ">Crops</label>
+				<select class='form-control' name='crop_id[]'  onchange="select_product_crop(this)">
+					 ${window.cropOptions}
+				</select>
+		</div>
+		
+		<div class="form-group col-md-3">
+			<label for="crop_id" class="col-form-label ">Crops step</label>
+			<select class='form-control cropstep_id' name='cropstep_id[]'>
+			<option value="">Select</option>
+			</select>
+		</div>
+		
+		<div class="form-group col-md-2">
+			<label for="crop_id" class="col-form-label ">User case</label>
+				<select class='form-control' name='product_crop_used_case[]'>
+				${window.usercaseOptions}
+				</select>
+		</div>
+
+       <div class="col-sm-2">
+            <label>&nbsp;</label>
+            <button type="button" class="btn btn-danger remove_row form-control">-</button>
+        </div>
+
+    </div>
+    `;
+
+    $("#more_fields").append(html);
+	
+	
+	$("#more_fields .field_block:last .addr_editor").summernote({
+		height:120
+	});
+	
+});
+
+function select_product_crop(el)
+{
+	var crop_id = $(el).val();
+	var url = base_url + 'admin/Product/get_cropstep_data';
+	let row = $(el).closest(".field_block");
+	
+	$.ajax({
+        url: url,
+        type: 'POST',
+        data: {id:crop_id},
+        dataType: 'json',
+        success: function (response) {
+            //alert(response);
+			row.find('.cropstep_id').html(response);
+        },
+        error: function (xhr, status, error) {
+            /*$('#inventory_pie_chart').html('<div class="text-center p-4"><p>Error loading chart data</p></div>');
+            $('#inventory_units_chart').html('<div class="text-center p-4"><p>Error loading chart data</p></div>');*/
+        }
+    });
+}
+
 function select_service(val)
 {
 	
@@ -11207,3 +11279,4 @@ function select_service(val)
 		$('#show_add_more_edit').hide();
 	}*/
 }
+
