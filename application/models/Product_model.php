@@ -316,24 +316,62 @@ class Product_model extends CI_Model
         }
 		
 		if(isset($data['edit_product_id'])) {
+			
+			foreach($data['service_id'] as $key => $desc)
+			{
+				// if new record then insert
+				if(!empty($desc) && !empty($data['crop_id'][$key]) &&!empty($data['cropstep_id'][$key]) &&!empty($data['product_crop_used_case'][$key]))
+				{
+					$cropstep_details_data = [
+						'product_id' => $p_id,
+						'service_id' => $desc ?? '',
+						'crop_id' => $data['crop_id'][$key] ?? '',
+						'crop_step_id' => $data['cropstep_id'][$key] ?? '',
+						'used_case_id' => $data['product_crop_used_case'][$key] ?? '',
+						'date' => date('Y-m-d h:i:s')
+						
+					];
+					
+					$this->db->insert(CROP_STEP_PRODUCTS, $cropstep_details_data);
+				}
+			}
 			 
+			 // update existing record
+			 foreach($data['edit_service_id'] as $key => $editservice)
+			 {
+				 if(!empty($editservice) && !empty($data['edit_crop_id'][$key]) &&!empty($data['edit_cropstep_id'][$key]) &&!empty($data['edit_product_crop_used_case'][$key]))
+				 {
+					 $cropstep_details_edit_data = [
+						'service_id' => $editservice ?? '',
+						'crop_id' => $data['edit_crop_id'][$key] ?? '',
+						'crop_step_id' => $data['edit_cropstep_id'][$key] ?? '',
+						'used_case_id' => $data['edit_product_crop_used_case'][$key] ?? '',
+						'date' => date('Y-m-d h:i:s')
+						
+					];
+					
+					$this->db->set($cropstep_details_edit_data)->where('id', $data['edit_crop_step_products_id'][$key])->update(CROP_STEP_PRODUCTS);
+				 }
+			 }
 		}
 		else 
 		{
 			foreach($data['service_id'] as $key => $desc)
 			{
-				
-				$cropstep_details_data = [
-					'product_id' => $p_id,
-					'service_id' => $desc ?? '',
-					'crop_id' => $data['crop_id'][$key] ?? '',
-					'crop_step_id' => $data['cropstep_id'][$key] ?? '',
-					'used_case_id' => $data['product_crop_used_case'][$key] ?? '',
-					'date' => date('Y-m-d h:i:s')
+				if(!empty($desc) && !empty(data['crop_id'][$key]) &&!empty($data['cropstep_id'][$key]) &&!empty($data['product_crop_used_case'][$key]))
+				{
+					$cropstep_details_data = [
+						'product_id' => $p_id,
+						'service_id' => $desc ?? '',
+						'crop_id' => $data['crop_id'][$key] ?? '',
+						'crop_step_id' => $data['cropstep_id'][$key] ?? '',
+						'used_case_id' => $data['product_crop_used_case'][$key] ?? '',
+						'date' => date('Y-m-d h:i:s')
+						
+					];
 					
-				];
-				
-				$this->db->insert(CROP_STEP_PRODUCTS, $cropstep_details_data);
+					$this->db->insert(CROP_STEP_PRODUCTS, $cropstep_details_data);
+				}
 			}
 		}
     }
@@ -1152,5 +1190,19 @@ class Product_model extends CI_Model
         $bulkData['rows'] = $rows;
 
         print_r(json_encode($bulkData));
+    }
+	
+	public function delete_product_cropstep_details($id)
+    {
+        // Escape the ID to prevent SQL injection
+        $id = escape_array($id);
+    
+        // Proceed with the deletion
+        $this->db->trans_start();
+        $this->db->where('id', $id)->delete(CROP_STEP_PRODUCTS);
+        $this->db->trans_complete();
+    
+        // Return the transaction status
+        return $this->db->trans_status();
     }
 }

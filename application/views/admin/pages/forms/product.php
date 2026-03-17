@@ -1006,12 +1006,13 @@
 														if(!empty($product_crop_step))
 														{
 														?>
-														<div class="form-group row field_block_edit align-items-end">
+														
 								
 															<?php 
 															foreach($product_crop_step as $cropsteps)
 															{
 															?>
+															<div class="form-group row field_block_edit align-items-end">
 																<div class="form-group col-md-3">
 																	<label for="service_id" class="col-form-label">Services</label>
 																	<select class='form-control' name='edit_service_id[]'>
@@ -1056,14 +1057,16 @@
 																		<?php } ?>
 																		</select>
 																</div>
+																<input type="hidden" value="<?php echo $cropsteps['id'] ; ?>" name="edit_crop_step_products_id[]">
 																<div class="col-sm-2 mt-2" id="show_add_button">
 																<label>&nbsp;</label>
-																	<button type="button" id="" class="btn btn-danger form-control">-</button>
+																	<button type="button" data-id="<?php echo $cropsteps['id'] ;?>" class="btn btn-danger form-control delete_product_cropstep_row">-</button>
 																</div>
+															</div>
 															<?php 
 															}
 															?>
-														</div>
+														
 														<?php 
 														}
 														?>

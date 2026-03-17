@@ -2357,4 +2357,10 @@ class Product extends CI_Controller
 		}
 		echo json_encode($html);
 	}
+	public function delete_product_cropstep_details_data()
+	{
+		$id = $this->input->post('id');
+		$delete_status = $this->product_model->delete_product_cropstep_details($id);
+		return true;
+	}
 }

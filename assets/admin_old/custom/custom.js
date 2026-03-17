@@ -11202,6 +11202,30 @@ $(document).on("click", "#more_fields_product_crop_step", function () {
 	
 });
 
+$(document).on("click", ".delete_product_cropstep_row", function () {
+	let id = $(this).data('id');
+	alert(id);
+   
+	$(this).closest(".field_block_edit").hide();
+	var url = base_url + 'admin/Product/delete_product_cropstep_details_data';
+	
+	$.ajax({
+        url: url,
+        type: 'POST',
+        data: {id:id},
+        dataType: 'json',
+        success: function (response) {
+             //alert(response);
+        },
+        error: function (xhr, status, error) {
+            /*$('#inventory_pie_chart').html('<div class="text-center p-4"><p>Error loading chart data</p></div>');
+            $('#inventory_units_chart').html('<div class="text-center p-4"><p>Error loading chart data</p></div>');*/
+        }
+    });
+	
+	
+});
+
 function select_product_crop(el)
 {
 	var crop_id = $(el).val();
