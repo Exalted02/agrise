@@ -174,6 +174,7 @@ Defined Methods:-
         "app/v1/api/get_services",
         "app/v1/api/thirdparty_apikey",
         "app/v1/api/current_soil_report",
+        "app/v1/api/crop_step_products",
     ];
 
     public function __construct()
@@ -7576,8 +7577,142 @@ Defined Methods:-
         print_r(json_encode($this->response));
 
     }
-  
-  
+	public function crop_step_products()
+    {
+		$data = array();
+		$service_id = $this->input->post('service_id');
+		$crop_id    = $this->input->post('crop_id');
+		$crop_step_id    = $this->input->post('crop_step_id');
+		
+		$this->db->from(CROP_STEP_PRODUCTS);
+		if (!empty($service_id)) {
+			$this->db->where('service_id', $service_id);
+		}
+		if (!empty($crop_id)) {
+			$this->db->where('crop_id', $crop_id);
+		}
+		
+		if (!empty($crop_step_id)) {
+			$this->db->where('crop_id', $crop_id);
+		}
+		
+		$this->db->group_by('used_case_id', 'ASC');
+		$query = $this->db->get();
+		$products = $query->result_array();
+
+		$grouped = [];
+
+		foreach ($products as $val)
+		{
+			$key = $val['service_id'] . '_' . $val['crop_id'] . '_' . $val['crop_step_id'];
+
+			// Create main entry if not exists
+			if (!isset($grouped[$key])) {
+				$grouped[$key] = [
+					'service_id'    => $val['service_id'],
+					'crop_id'       => $val['crop_id'],
+					'crop_step_id'  => $val['crop_step_id'],
+					'usecases'      => []
+				];
+			}
+
+			// Fetch used cases
+			$this->db->from(CROP_STEP_PRODUCTS);
+			$this->db->where('used_case_id', $val['used_case_id']);
+			$query = $this->db->get();
+			$used_case_data = $query->result_array();
+
+			foreach ($used_case_data as $cases)
+			{
+				$case_id = $cases['used_case_id'];
+
+				$grouped[$key]['usecases'][] = [
+					'used_case_id' => $case_id,
+					'case_name'    => USER_CASE[$case_id] ?? null
+				];
+			}
+		}
+
+		// री-index array (0,1,2...)
+		$data['main'] = array_values($grouped);
+
+		// Final response
+		$response = [
+			"message" => "Success",
+			"data" => $data
+		];
+
+		echo json_encode($response);
+		
+	}
+	public function crop_step_products_bck()
+    {
+		$data = array();
+		$service_id = $this->input->post('service_id');
+		$crop_id    = $this->input->post('crop_id');
+		$crop_step_id    = $this->input->post('crop_step_id');
+		
+		$this->db->from(CROP_STEP_PRODUCTS);
+		if (!empty($service_id)) {
+			$this->db->where('service_id', $service_id);
+		}
+		if (!empty($crop_id)) {
+			$this->db->where('crop_id', $crop_id);
+		}
+		
+		if (!empty($crop_step_id)) {
+			$this->db->where('crop_id', $crop_id);
+		}
+		
+		$this->db->group_by('used_case_id', 'ASC');
+		$query = $this->db->get();
+		$products = $query->result_array();
+		
+		foreach($products as $val)
+		{
+			$data['main'][] = [
+				'service_id' => $val['service_id'],
+				'crop_id' => $val['crop_id'],
+				'crop_step_id' => $val['crop_step_id']
+			];
+			
+			$this->db->from(CROP_STEP_PRODUCTS);
+			$this->db->where('used_case_id', $val['used_case_id']);
+			$query = $this->db->get();
+			$used_case_data = $query->result_array();
+			
+			foreach($used_case_data as $cases)
+			{
+				if($cases['used_case_id'] == '1')
+				{
+					$casename = 'user case1';
+				}
+				elseif($cases['used_case_id'] == '2')
+				{
+					$casename = 'user case2';
+				}
+				
+				
+		
+				$data['main']['cases'][] = [
+						/*'service_id' => $val['service_id'],
+						'crop_id' => $val['crop_id'],
+						'crop_step_id' => $val['crop_step_id'],*/
+						'used_case_id' => $val['used_case_id'],
+						'case_name'    => $casename
+					];
+					
+			}
+		}
+		//echo "<pre>";print_r($products);
+		
+		$response = [
+			'message' => 'Success',
+			'data' => $data
+		];
+
+		echo json_encode($response);
+	}
   
 
   
@@ -7585,3 +7720,4 @@ Defined Methods:-
   
    
 }
+
