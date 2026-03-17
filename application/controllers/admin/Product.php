@@ -2363,4 +2363,25 @@ class Product extends CI_Controller
 		$delete_status = $this->product_model->delete_product_cropstep_details($id);
 		return true;
 	}
+	
+	public function get_sevices_data()
+    {
+        $search = $this->input->get('search');
+        $response = $this->product_model->get_services($search);
+        echo json_encode($response);
+    } 
+	
+	public function get_product_cropstep_data()
+    {
+        $search = $this->input->get('search');
+        $response = $this->product_model->get_crops_data($search);
+        echo json_encode($response);
+    }
+	
+	public function get_product_user_case_data()
+    {
+        $search = $this->input->get('search');
+        $response = $this->product_model->get_user_case_data($search);
+        echo json_encode($response);
+    }
 }

@@ -960,23 +960,17 @@
 															<div class="row field_block  align-items-end">
 																<div class="form-group col-md-3">
 																	<label for="service_id" class="col-form-label">Services</label>
-																	<select class='form-control' name='service_id[]'>
+																	<select class=' col-md-12 form-control service_id' name='service_id[]'>
 																		<option value="">Select</option>
-																		<?php foreach ($services_master as $row) { ?>
-																		<option value=" <?= $row['id']; ?>"> <?= $row['service_title']; ?> </option>
-																		<?php 
-																		}
-																		?>
+																		
 																	</select>
 																</div>
 															   
 																<div class="form-group col-md-2">
 																	<label for="crop_id" class="col-form-label ">Crops</label>
-																		<select class='form-control' name='crop_id[]' onchange="select_product_crop(this)">
+																		<select class='form-control crop_id' name='crop_id[]' onchange="select_product_crop(this)">
 																			<option value="">Select</option>
-																			<?php foreach ($crop_master as $row) { ?>
-																			<option value="<?= $row['id'] ?>"> <?= $row['crop_title'] ?> </option>
-																		<?php } ?>
+																			
 																		</select>
 																</div>
 																<div class="form-group col-md-3">
@@ -988,7 +982,7 @@
 																</div>
 																<div class="form-group col-md-2">
 																		<label for="crop_id" class="col-form-label ">User case</label>
-																		<select class='form-control' name='product_crop_used_case[]'>
+																		<select class='form-control user_case_id' name='product_crop_used_case[]'>
 																			<option value="">Select</option>
 																				<?php foreach ($user_case as $k=>$val) { ?>
 																			<option value="<?= $k ?>"> <?= $val; ?> </option>

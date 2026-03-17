@@ -177,9 +177,13 @@ define('CROP_CATEGORIES', [
     7 => 'Spices & Condiments',
 ]);
 
-//user case  array
+//user case  array 
+/*define('USER_CASE', [
+    1 => 'पीक वाढीसाठी ',
+    2 => 'रसशोषक किडी तसेच अळीच्या नियंत्रणासाठी',
+]);*/
+
 define('USER_CASE', [
-    1 => 'User case1',
-    2 => 'User case2',
-    3 => 'User case3',
+    1 => 'user case1',
+    2 => 'user case2',
 ]);

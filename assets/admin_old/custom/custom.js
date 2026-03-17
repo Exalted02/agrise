@@ -11159,15 +11159,15 @@ $(document).on("click", "#more_fields_product_crop_step", function () {
 
         <div class="form-group col-md-3">
             <label for="service_id" class="col-form-label">Service</label>
-           <select class='form-control' name='service_id[]'>
-			 ${window.servicesOptions}
+           <select class=' col-md-12 form-control service_id' name='service_id[]'>
+			 
 			</select>
         </div>
 		
 		<div class="form-group col-md-2">
 			<label for="crop_id" class="col-form-label ">Crops</label>
-				<select class='form-control' name='crop_id[]'  onchange="select_product_crop(this)">
-					 ${window.cropOptions}
+				<select class='form-control crop_id' name='crop_id[]'  onchange="select_product_crop(this)">
+					 
 				</select>
 		</div>
 		
@@ -11179,9 +11179,9 @@ $(document).on("click", "#more_fields_product_crop_step", function () {
 		</div>
 		
 		<div class="form-group col-md-2">
-			<label for="crop_id" class="col-form-label ">User case</label>
-				<select class='form-control' name='product_crop_used_case[]'>
-				${window.usercaseOptions}
+			<label for="crop_id" class="col-form-label">User case</label>
+				<select class='form-control user_case_id' name='product_crop_used_case[]'>
+				
 				</select>
 		</div>
 
@@ -11196,6 +11196,84 @@ $(document).on("click", "#more_fields_product_crop_step", function () {
     $("#more_fields").append(html);
 	
 	
+	// 🔥 Initialize select2 for NEW element only
+    $("#more_fields .service_id").last().select2({
+        ajax: {
+            url: base_url + 'admin/product/get_sevices_data',
+            type: 'GET',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    search: params.term
+                }
+            },
+            processResults: function (response) {
+                return {
+                    results: response
+                }
+            },
+            cache: true
+        },
+        minimumInputLength: 1,
+        theme: 'bootstrap4',
+        placeholder: 'Search for services'
+    });
+	
+	$('.crop_id').select2({
+		ajax: {
+			url: base_url + 'admin/product/get_product_cropstep_data',
+			type: 'GET',
+			dataType: 'json',
+			delay: 250,
+			data: function (params) {
+				return {
+					search: params.term // search term
+				}
+			},
+			processResults: function (response) {
+				return {
+					results: response
+				}
+			},
+			cache: true
+		},
+		minimumInputLength: 1,
+		theme: 'bootstrap4',
+		placeholder: 'Search for cropstep'
+	});
+	
+	// select 2 js select user case
+	$('.user_case_id').select2({
+		ajax: {
+			url: base_url + 'admin/product/get_product_user_case_data',
+			type: 'GET',
+			dataType: 'json',
+			delay: 250,
+			data: function (params) {
+				return {
+					search: params.term // search term
+				}
+			},
+			processResults: function (response) {
+				return {
+					results: response
+				}
+			},
+			cache: true
+		},
+		minimumInputLength: 1,
+		theme: 'bootstrap4',
+		placeholder: 'Search for user case'
+	});
+	
+	$('.cropstep_id').select2({
+		minimumInputLength: 1,
+		theme: 'bootstrap4',
+		placeholder: 'Search for crop step'
+	});
+	
+	
 	$("#more_fields .field_block:last .addr_editor").summernote({
 		height:120
 	});
@@ -11204,7 +11282,6 @@ $(document).on("click", "#more_fields_product_crop_step", function () {
 
 $(document).on("click", ".delete_product_cropstep_row", function () {
 	let id = $(this).data('id');
-	alert(id);
    
 	$(this).closest(".field_block_edit").hide();
 	var url = base_url + 'admin/Product/delete_product_cropstep_details_data';
@@ -11226,9 +11303,89 @@ $(document).on("click", ".delete_product_cropstep_row", function () {
 	
 });
 
+// select 2 js select service
+$('.service_id').select2({
+    ajax: {
+        url: base_url + 'admin/product/get_sevices_data',
+        type: 'GET',
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+            return {
+                search: params.term // search term
+            }
+        },
+        processResults: function (response) {
+            return {
+                results: response
+            }
+        },
+        cache: true
+    },
+    minimumInputLength: 1,
+    theme: 'bootstrap4',
+    placeholder: 'Search for services'
+});
+
+// select 2 js select cropstep id
+$('.crop_id').select2({
+    ajax: {
+        url: base_url + 'admin/product/get_product_cropstep_data',
+        type: 'GET',
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+            return {
+                search: params.term // search term
+            }
+        },
+        processResults: function (response) {
+            return {
+                results: response
+            }
+        },
+        cache: true
+    },
+    minimumInputLength: 1,
+    theme: 'bootstrap4',
+    placeholder: 'Search for cropstep'
+});
+
+$('.cropstep_id').select2({
+	minimumInputLength: 1,
+    theme: 'bootstrap4',
+    placeholder: 'Search for crop step'
+});
+	
+
+// select 2 js select user case
+$('.user_case_id').select2({
+    ajax: {
+        url: base_url + 'admin/product/get_product_user_case_data',
+        type: 'GET',
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+            return {
+                search: params.term // search term
+            }
+        },
+        processResults: function (response) {
+            return {
+                results: response
+            }
+        },
+        cache: true
+    },
+    minimumInputLength: 1,
+    theme: 'bootstrap4',
+    placeholder: 'Search for user case'
+});
+
 function select_product_crop(el)
 {
 	var crop_id = $(el).val();
+	//alert(crop_id);
 	var url = base_url + 'admin/Product/get_cropstep_data';
 	let row = $(el).closest(".field_block");
 	

@@ -1205,4 +1205,52 @@ class Product_model extends CI_Model
         // Return the transaction status
         return $this->db->trans_status();
     }
+	function get_services($search_term = "")
+    {
+        // Fetch sevices
+        $this->db->select('*');
+        $this->db->where("service_title like '%" . $search_term . "%'");
+        $fetched_records = $this->db->get(TBL_SERVICE_MASTER);
+        $sevices = $fetched_records->result_array();
+        // Initialize Array with fetched data
+        $data = array();
+        foreach ($sevices as $sevice) {
+            $data[] = array("id" => $sevice['id'], "text" => $sevice['service_title']);
+        }
+        return $data;
+    }
+	
+	function get_crops_data($search_term = "")
+    {
+        // Fetch sevices
+        $this->db->select('*');
+        $this->db->where("crop_title like '%" . $search_term . "%'");
+        $fetched_records = $this->db->get(TBL_CROP_MASTER);
+        $cropsteps = $fetched_records->result_array();
+        // Initialize Array with fetched data
+        $data = array();
+        foreach ($cropsteps as $cropstep) {
+            $data[] = array("id" => $cropstep['id'], "text" => $cropstep['crop_title']);
+        }
+        return $data;
+    }
+	
+	function get_user_case_data($search_term = "")
+    {
+        $user_cases = USER_CASE;
+		$data = array();
+
+		foreach ($user_cases as $id => $text) {
+			if ($search_term != "" && stripos($text, $search_term) === false) {
+				continue;
+			}
+
+			$data[] = array(
+				"id" => $id,
+				"text" => $text
+			);
+		}
+
+		return $data;
+    }
 }
