@@ -337,22 +337,25 @@ class Product_model extends CI_Model
 			}
 			 
 			 // update existing record
-			 foreach($data['edit_service_id'] as $key => $editservice)
-			 {
-				 if(!empty($editservice) && !empty($data['edit_crop_id'][$key]) &&!empty($data['edit_cropstep_id'][$key]) &&!empty($data['edit_product_crop_used_case'][$key]))
+			if(isset($data['edit_service_id']))
+			{
+				 foreach($data['edit_service_id'] as $key => $editservice)
 				 {
-					 $cropstep_details_edit_data = [
-						'service_id' => $editservice ?? '',
-						'crop_id' => $data['edit_crop_id'][$key] ?? '',
-						'crop_step_id' => $data['edit_cropstep_id'][$key] ?? '',
-						'used_case_id' => $data['edit_product_crop_used_case'][$key] ?? '',
-						'date' => date('Y-m-d h:i:s')
+					 if(!empty($editservice) && !empty($data['edit_crop_id'][$key]) &&!empty($data['edit_cropstep_id'][$key]) &&!empty($data['edit_product_crop_used_case'][$key]))
+					 {
+						 $cropstep_details_edit_data = [
+							'service_id' => $editservice ?? '',
+							'crop_id' => $data['edit_crop_id'][$key] ?? '',
+							'crop_step_id' => $data['edit_cropstep_id'][$key] ?? '',
+							'used_case_id' => $data['edit_product_crop_used_case'][$key] ?? '',
+							'date' => date('Y-m-d h:i:s')
+							
+						];
 						
-					];
-					
-					$this->db->set($cropstep_details_edit_data)->where('id', $data['edit_crop_step_products_id'][$key])->update(CROP_STEP_PRODUCTS);
+						$this->db->set($cropstep_details_edit_data)->where('id', $data['edit_crop_step_products_id'][$key])->update(CROP_STEP_PRODUCTS);
+					 }
 				 }
-			 }
+			}
 		}
 		else 
 		{
@@ -1209,7 +1212,10 @@ class Product_model extends CI_Model
     {
         // Fetch sevices
         $this->db->select('*');
-        $this->db->where("service_title like '%" . $search_term . "%'");
+		if(!empty($search_term))
+		{
+			$this->db->where("service_title like '%" . $search_term . "%'");
+		}
         $fetched_records = $this->db->get(TBL_SERVICE_MASTER);
         $sevices = $fetched_records->result_array();
         // Initialize Array with fetched data
@@ -1253,4 +1259,15 @@ class Product_model extends CI_Model
 
 		return $data;
     }
+	public function get_crops_rec($id='')
+	{
+		$this->db->select('*');
+		$this->db->where("crop_id", $id);
+		$fetched_records = $this->db->get(TBL_CROP_STEPS);
+		
+		$cropsteps = $fetched_records->result_array();
+        
+        return $cropsteps;
+		
+	}
 }

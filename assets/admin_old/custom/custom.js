@@ -11160,7 +11160,7 @@ $(document).on("click", "#more_fields_product_crop_step", function () {
         <div class="form-group col-md-3">
             <label for="service_id" class="col-form-label">Service</label>
            <select class=' col-md-12 form-control service_id' name='service_id[]'>
-			 
+			
 			</select>
         </div>
 		
@@ -11197,7 +11197,7 @@ $(document).on("click", "#more_fields_product_crop_step", function () {
 	
 	
 	// 🔥 Initialize select2 for NEW element only
-    $("#more_fields .service_id").last().select2({
+    $(".service_id").last().select2({
         ajax: {
             url: base_url + 'admin/product/get_sevices_data',
             type: 'GET',
@@ -11215,7 +11215,7 @@ $(document).on("click", "#more_fields_product_crop_step", function () {
             },
             cache: true
         },
-        minimumInputLength: 1,
+        //minimumInputLength: 1,
         theme: 'bootstrap4',
         placeholder: 'Search for services'
     });
@@ -11238,7 +11238,7 @@ $(document).on("click", "#more_fields_product_crop_step", function () {
 			},
 			cache: true
 		},
-		minimumInputLength: 1,
+		//minimumInputLength: 1,
 		theme: 'bootstrap4',
 		placeholder: 'Search for cropstep'
 	});
@@ -11262,13 +11262,13 @@ $(document).on("click", "#more_fields_product_crop_step", function () {
 			},
 			cache: true
 		},
-		minimumInputLength: 1,
+		//minimumInputLength: 1,
 		theme: 'bootstrap4',
 		placeholder: 'Search for user case'
 	});
 	
 	$('.cropstep_id').select2({
-		minimumInputLength: 1,
+		//minimumInputLength: 1,
 		theme: 'bootstrap4',
 		placeholder: 'Search for crop step'
 	});
@@ -11322,7 +11322,7 @@ $('.service_id').select2({
         },
         cache: true
     },
-    minimumInputLength: 1,
+   // minimumInputLength: 1,
     theme: 'bootstrap4',
     placeholder: 'Search for services'
 });
@@ -11346,40 +11346,102 @@ $('.crop_id').select2({
         },
         cache: true
     },
-    minimumInputLength: 1,
+    //minimumInputLength: 1,
     theme: 'bootstrap4',
     placeholder: 'Search for cropstep'
 });
 
+$('.user_case_id').select2({
+		ajax: {
+			url: base_url + 'admin/product/get_product_user_case_data',
+			type: 'GET',
+			dataType: 'json',
+			delay: 250,
+			data: function (params) {
+				return {
+					search: params.term // search term
+				}
+			},
+			processResults: function (response) {
+				return {
+					results: response
+				}
+			},
+			cache: true
+		},
+		//minimumInputLength: 1,
+		theme: 'bootstrap4',
+		placeholder: 'Search for user case'
+	});
+
 $('.cropstep_id').select2({
-	minimumInputLength: 1,
+	//minimumInputLength: 1,
     theme: 'bootstrap4',
     placeholder: 'Search for crop step'
+});
+
+$('.edit_service_id').select2({
+	//minimumInputLength: 1,
+    theme: 'bootstrap4',
+    placeholder: 'Search for service'
+});
+
+$('.edit_crop_id').select2({
+	//minimumInputLength: 1,
+    theme: 'bootstrap4',
+    placeholder: 'Search for crop'
+});
+
+$('.edit_cropstep_id').select2({
+	//minimumInputLength: 1,
+    theme: 'bootstrap4',
+    placeholder: 'Search for cropstep'
+});
+
+/*$('.edit_cropstep_id').each(function () {
+    $(this).select2('destroy').select2({
+        minimumInputLength: 1,
+        theme: 'bootstrap4',
+        placeholder: 'Search for cropstep'
+    });
+});*/
+
+$('.edit_product_crop_used_case').select2({
+	minimumInputLength: 1,
+    theme: 'bootstrap4',
+    placeholder: 'Search for used case'
 });
 	
 
 // select 2 js select user case
-$('.user_case_id').select2({
-    ajax: {
-        url: base_url + 'admin/product/get_product_user_case_data',
-        type: 'GET',
-        dataType: 'json',
-        delay: 250,
-        data: function (params) {
-            return {
-                search: params.term // search term
-            }
-        },
-        processResults: function (response) {
-            return {
-                results: response
-            }
-        },
-        cache: true
-    },
-    minimumInputLength: 1,
-    theme: 'bootstrap4',
-    placeholder: 'Search for user case'
+
+
+$(document).ready(function () {
+    initEditCropStep();
+	
+	
+	/*$('.service_id').select2({
+		ajax: {
+			url: base_url + 'admin/product/get_sevices_data',
+			type: 'GET',
+			dataType: 'json',
+			delay: 250,
+			data: function (params) {
+				return {
+					search: params.term // search term
+				}
+			},
+			processResults: function (response) {
+				return {
+					results: response
+				}
+			},
+			cache: true
+		},
+		//minimumInputLength: 1,
+		theme: 'bootstrap4',
+		placeholder: 'Search for services'
+	});*/
 });
 
 function select_product_crop(el)
@@ -11396,7 +11458,30 @@ function select_product_crop(el)
         dataType: 'json',
         success: function (response) {
             //alert(response);
-			row.find('.cropstep_id').html(response);
+			row.find('.cropstep_id').html(response).trigger('change');
+        },
+        error: function (xhr, status, error) {
+            /*$('#inventory_pie_chart').html('<div class="text-center p-4"><p>Error loading chart data</p></div>');
+            $('#inventory_units_chart').html('<div class="text-center p-4"><p>Error loading chart data</p></div>');*/
+        }
+    });
+}
+
+function select_product_crop_edit(el)
+{
+	var crop_id = $(el).val();
+	//alert(crop_id);
+	var url = base_url + 'admin/Product/get_cropstep_data';
+	let row = $(el).closest(".field_block_edit");
+	
+	$.ajax({
+        url: url,
+        type: 'POST',
+        data: {id:crop_id},
+        dataType: 'json',
+        success: function (response) {
+            //alert(response);
+			row.find('.edit_cropstep_id').html(response).trigger('change');
         },
         error: function (xhr, status, error) {
             /*$('#inventory_pie_chart').html('<div class="text-center p-4"><p>Error loading chart data</p></div>');
@@ -11459,5 +11544,15 @@ function select_service(val)
 		$('#show_add_more').hide();
 		$('#show_add_more_edit').hide();
 	}*/
+}
+
+function initEditCropStep(el = '.edit_cropstep_id') {
+	
+	//alert('ok');
+    $(el).select2({
+        //minimumInputLength: 1,
+        theme: 'bootstrap4',
+        placeholder: 'Search for cropdtep'
+    });
 }
 

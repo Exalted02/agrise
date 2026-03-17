@@ -60,10 +60,10 @@ class Product extends CI_Controller
 				 $this->data['product_crop_step'] = $product_crop_step;
 				 
 				 $this->data['crop_step_data'] = fetch_details(TBL_CROP_STEPS);
-				 //$aa = fetch_details(TBL_CROP_STEPS);
-				 //echo "<pre>";print_r($aa);die;
-				
-                if (!empty($product_details)) {
+				 //$this->data['crop_step_data'] = fetch_details(TBL_CROP_STEPS, ['id' => $_GET['edit_id']], '*');
+				 
+			
+				if (!empty($product_details)) {
                     $this->data['product_details'] = $product_details;
                     $this->data['product_variants'] = get_variants_values_by_pid($_GET['edit_id']);
                     $product_attributes = fetch_details('product_attributes', ['product_id' => $_GET['edit_id']]);

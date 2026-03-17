@@ -975,7 +975,7 @@
 																</div>
 																<div class="form-group col-md-3">
 																	<label for="crop_id" class="col-form-label ">Crops step</label>
-																	<select class='form-control cropstep_id' name="cropstep_id[]" id="cropstep_id">
+																	<select class='form-control cropstep_id' name="cropstep_id[]">
 																		<option value="">Select</option>
 																	
 																	</select>
@@ -999,17 +999,23 @@
 														<?php 
 														if(!empty($product_crop_step))
 														{
+															//echo "<pre>";print_r($crop_step_data); die;
 														?>
 														
 								
 															<?php 
 															foreach($product_crop_step as $cropsteps)
 															{
+																 $this->load->model('product_model');
+																 
+																$cropresult = $this->product_model->get_crops_rec($cropsteps['crop_id']);
+																//echo "<pre>";print_r($cropresult); die;
+																
 															?>
 															<div class="form-group row field_block_edit align-items-end">
 																<div class="form-group col-md-3">
 																	<label for="service_id" class="col-form-label">Services</label>
-																	<select class='form-control' name='edit_service_id[]'>
+																	<select class='form-control edit_service_id' name='edit_service_id[]'>
 																		<option value="">Select</option>
 																		<?php foreach ($services_master as $row) { ?>
 																		<option value=" <?= $row['id']; ?>" <?php echo $cropsteps['service_id'] == $row['id'] ? 'selected' : ''; ?>> <?= $row['service_title']; ?> </option>
@@ -1021,7 +1027,7 @@
 															   
 																<div class="form-group col-md-2">
 																	<label for="crop_id" class="col-form-label ">Crops</label>
-																		<select class='form-control' name='edit_crop_id[]' onchange="select_product_crop(this)">
+																		<select class='form-control edit_crop_id' name='edit_crop_id[]' onchange="select_product_crop_edit(this)">
 																			<option value="">Select</option>
 																			<?php foreach ($crop_master as $row) { ?>
 																			<option value="<?= $row['id'] ?>" <?php echo $cropsteps['crop_id'] == $row['id'] ? 'selected' : ''; ?>> <?= $row['crop_title'] ?> </option>
@@ -1030,10 +1036,10 @@
 																</div>
 																<div class="form-group col-md-3">
 																	<label for="crop_id" class="col-form-label ">Crops step</label>
-																	<select class='form-control cropstep_id' name="edit_cropstep_id[]" id="cropstep_id">
+																	<select class='form-control edit_cropstep_id' name="edit_cropstep_id[]">
 																		<option value="">Select</option>
 																		<?php 
-																		foreach($crop_step_data as $data)
+																		foreach($cropresult as $data)
 																		{
 																		?>
 																			<option value="<?php echo  $data['id'] ;?>" <?php echo $cropsteps['crop_step_id'] == $data['id'] ? 'selected' : ''; ?>><?php echo  $data['steps_title'] ;?></option>
@@ -1044,7 +1050,7 @@
 																</div>
 																<div class="form-group col-md-2">
 																		<label for="crop_id" class="col-form-label ">User case</label>
-																		<select class='form-control' name='edit_product_crop_used_case[]'>
+																		<select class='form-control edit_product_crop_used_case' name='edit_product_crop_used_case[]'>
 																			<option value="">Select</option>
 																				<?php foreach ($user_case as $k=>$val) { ?>
 																			<option value="<?= $k ?>" <?php echo $cropsteps['used_case_id'] == $k ? 'selected' : ''; ?>> <?= $val; ?> </option>
