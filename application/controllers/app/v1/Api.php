@@ -7652,12 +7652,16 @@ Defined Methods:-
 			
 		}
 
-		// री-index array (0,1,2...)
+		
 		//$data = array_values($grouped);
-
+		// get crop step name 
+		$this->db->select('steps_title');
+		$this->db->where('id', $crop_step_id);
+		$qr = $this->db->get(TBL_CROP_STEPS)->row_array();
 		// Final response
 		$response = [
 			"message" => "Success",
+			"crop_step_name" => $qr['steps_title'],
 			"data" => $data
 		];
 
