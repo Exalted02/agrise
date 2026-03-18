@@ -7593,48 +7593,67 @@ Defined Methods:-
 		}
 		
 		if (!empty($crop_step_id)) {
-			$this->db->where('crop_id', $crop_id);
+			$this->db->where('crop_step_id', $crop_step_id);
 		}
 		
 		$this->db->group_by('used_case_id', 'ASC');
 		$query = $this->db->get();
-		$products = $query->result_array();
+		$crop_step_products = $query->result_array();
 
 		$grouped = [];
-
-		foreach ($products as $val)
-		{
-			$key = $val['service_id'] . '_' . $val['crop_id'] . '_' . $val['crop_step_id'];
-
-			// Create main entry if not exists
-			if (!isset($grouped[$key])) {
-				$grouped[$key] = [
-					'service_id'    => $val['service_id'],
-					'crop_id'       => $val['crop_id'],
-					'crop_step_id'  => $val['crop_step_id'],
-					'usecases'      => []
+		//echo "<pre>";print_r($products);die;
+		$key = $service_id . '_' . $crop_id . '_' . $crop_step_id;
+		if (!isset($grouped)) {
+				$grouped = [
+					'service_id'    => $service_id,
+					'crop_id'       => $crop_id,
+					'crop_step_id'  => $crop_step_id,
+					'crop_step_use_case'  => [],
 				];
 			}
-
+		$data = [];	
+		foreach($crop_step_products as $s=>$val)
+		{
 			// Fetch used cases
 			$this->db->from(CROP_STEP_PRODUCTS);
+			$this->db->where('service_id', $val['service_id']);
+			$this->db->where('crop_id', $val['crop_id']);
+			$this->db->where('crop_step_id', $val['crop_step_id']);
 			$this->db->where('used_case_id', $val['used_case_id']);
 			$query = $this->db->get();
 			$used_case_data = $query->result_array();
+			
+			$crop_step_use_case  = USER_CASE[$val['used_case_id']] ?? null;
 
-			foreach ($used_case_data as $cases)
+			$aa = [];
+			foreach ($used_case_data as $k=>$cases)
 			{
+				
 				$case_id = $cases['used_case_id'];
-
-				$grouped[$key]['usecases'][] = [
-					'used_case_id' => $case_id,
-					'case_name'    => USER_CASE[$case_id] ?? null
-				];
+				$index = $case_id - 1; 
+				
+				// fetch product 
+				$product_res = $this->db->select('p.id as pid ,p.name, p.image, product_variants.price as product_price, product_variants.special_price as product_special_price')->join('product_variants', 'product_variants.product_id = p.id', 'left');
+				$product_res->where('p.id', $cases['product_id']);
+				$product_data = $product_res->get('products p')->row_array();
+		
+				$hhh['used_case_id'] = $case_id;
+				$hhh['product_id'] = $cases['product_id'];
+				$hhh['product_name'] = $product_data['name'];
+				$hhh['product_price'] = $product_data['product_price'];
+				$hhh['product_special_price'] = $product_data['product_special_price'];
+				$hhh['product_image'] = get_image_url($product_data['image'], 'thumb', 'sm');
+				
+				$aa[] = 	$hhh;
+				
+				
 			}
+			$data[$crop_step_use_case] =$aa;
+			
 		}
 
 		// री-index array (0,1,2...)
-		$data['main'] = array_values($grouped);
+		//$data = array_values($grouped);
 
 		// Final response
 		$response = [

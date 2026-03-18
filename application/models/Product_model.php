@@ -66,7 +66,7 @@ class Product_model extends CI_Model
         $pickup_location = (isset($data['pickup_location'])) ? $data['pickup_location'] : null;
         $download_type = (isset($data['download_link_type']) && !empty($data['download_link_type'])) ? $data['download_link_type'] : "";
         $download_link = (!empty($download_type)) ? (($download_type == 'add_link') ? $data['download_link'] : $data['pro_input_zip']) : "";
-
+        
         $pro_data = [
             'name' => $data['pro_input_name'],
             'short_description' => $short_description,
