@@ -7599,18 +7599,7 @@ Defined Methods:-
 		$this->db->group_by('used_case_id', 'ASC');
 		$query = $this->db->get();
 		$crop_step_products = $query->result_array();
-
-		$grouped = [];
-		//echo "<pre>";print_r($products);die;
-		$key = $service_id . '_' . $crop_id . '_' . $crop_step_id;
-		if (!isset($grouped)) {
-				$grouped = [
-					'service_id'    => $service_id,
-					'crop_id'       => $crop_id,
-					'crop_step_id'  => $crop_step_id,
-					'crop_step_use_case'  => [],
-				];
-			}
+		
 		$data = [];	
 		foreach($crop_step_products as $s=>$val)
 		{
@@ -7637,7 +7626,7 @@ Defined Methods:-
 				$product_res->where('p.id', $cases['product_id']);
 				$product_data = $product_res->get('products p')->row_array();
 		
-				$hhh['used_case_id'] = $case_id;
+				//$hhh['used_case_id'] = $case_id;
 				$hhh['product_id'] = $cases['product_id'];
 				$hhh['product_name'] = $product_data['name'];
 				$hhh['product_price'] = $product_data['product_price'];
@@ -7651,9 +7640,6 @@ Defined Methods:-
 			$data[$crop_step_use_case] =$aa;
 			
 		}
-
-		
-		//$data = array_values($grouped);
 		// get crop step name 
 		$this->db->select('steps_title');
 		$this->db->where('id', $crop_step_id);
@@ -7668,79 +7654,6 @@ Defined Methods:-
 		echo json_encode($response);
 		
 	}
-	public function crop_step_products_bck()
-    {
-		$data = array();
-		$service_id = $this->input->post('service_id');
-		$crop_id    = $this->input->post('crop_id');
-		$crop_step_id    = $this->input->post('crop_step_id');
-		
-		$this->db->from(CROP_STEP_PRODUCTS);
-		if (!empty($service_id)) {
-			$this->db->where('service_id', $service_id);
-		}
-		if (!empty($crop_id)) {
-			$this->db->where('crop_id', $crop_id);
-		}
-		
-		if (!empty($crop_step_id)) {
-			$this->db->where('crop_id', $crop_id);
-		}
-		
-		$this->db->group_by('used_case_id', 'ASC');
-		$query = $this->db->get();
-		$products = $query->result_array();
-		
-		foreach($products as $val)
-		{
-			$data['main'][] = [
-				'service_id' => $val['service_id'],
-				'crop_id' => $val['crop_id'],
-				'crop_step_id' => $val['crop_step_id']
-			];
-			
-			$this->db->from(CROP_STEP_PRODUCTS);
-			$this->db->where('used_case_id', $val['used_case_id']);
-			$query = $this->db->get();
-			$used_case_data = $query->result_array();
-			
-			foreach($used_case_data as $cases)
-			{
-				if($cases['used_case_id'] == '1')
-				{
-					$casename = 'user case1';
-				}
-				elseif($cases['used_case_id'] == '2')
-				{
-					$casename = 'user case2';
-				}
-				
-				
-		
-				$data['main']['cases'][] = [
-						/*'service_id' => $val['service_id'],
-						'crop_id' => $val['crop_id'],
-						'crop_step_id' => $val['crop_step_id'],*/
-						'used_case_id' => $val['used_case_id'],
-						'case_name'    => $casename
-					];
-					
-			}
-		}
-		//echo "<pre>";print_r($products);
-		
-		$response = [
-			'message' => 'Success',
-			'data' => $data
-		];
-
-		echo json_encode($response);
-	}
-  
-
-  
-  
-  
    
 }
 
